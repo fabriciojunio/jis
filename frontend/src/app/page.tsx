@@ -1,10 +1,10 @@
-import { getTopJobs, getTodayMetrics, getCallbackRate, triggerCollection } from "@/lib/api";
-import { revalidatePath } from "next/cache";
+import { getTopJobs, getTodayMetrics, getCallbackRate } from "@/lib/api";
 import { JobCard } from "@/components/JobCard";
 import type { Job, DailyMetrics } from "@/lib/types";
 import Link from "next/link";
+import { collectAction } from "./actions";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 async function fetchAll() {
   const [jobs, metrics, rate] = await Promise.allSettled([
@@ -20,14 +20,16 @@ async function fetchAll() {
   };
 }
 
-async function collectAction() {
-  "use server";
-  await triggerCollection();
-  revalidatePath("/");
-}
-
 export default async function Dashboard() {
-  const { jobs, metrics, callbackRate } = await fetchAll();
+  let jobs: Job[] = [];
+  let metrics: DailyMetrics | null = null;
+  let callbackRate = 0;
+
+  try {
+    ({ jobs, metrics, callbackRate } = await fetchAll());
+  } catch {
+    // API offline — renderiza com dados vazios
+  }
 
   const stats = [
     { label: "Vagas Hoje", value: metrics?.jobsCollected ?? 0 },
@@ -68,7 +70,7 @@ export default async function Dashboard() {
         <div className="text-center py-16 bg-white rounded-xl border border-dashed border-gray-200">
           <p className="text-gray-400 text-lg">Nenhuma vaga encontrada.</p>
           <p className="text-gray-400 text-sm mt-1">
-            Clique em &quot;Coletar agora&quot; para iniciar a busca.
+            Clique em &quot;Coletar agora&quot; para iniciar a busca, ou conecte o backend.
           </p>
         </div>
       ) : (
