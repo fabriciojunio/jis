@@ -1,0 +1,80 @@
+version: "3.9"
+
+# ── DESENVOLVIMENTO LOCAL ─────────────────────────────────────────
+# Para rodar: docker-compose up -d
+# Requer: arquivo .env na raiz (copie .env.example)
+
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: jis_db
+      POSTGRES_USER: jis_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-jis_pass}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jis_user -d jis_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/jis_db
+      DB_USER: jis_user
+      DB_PASSWORD: ${DB_PASSWORD:-jis_pass}
+      ML_SERVICE_URL: http://ml-service:8000
+      EMAIL_ENABLED: ${EMAIL_ENABLED:-false}
+      EMAIL_RECIPIENT: ${EMAIL_RECIPIENT:-junioad555@gmail.com}
+      EMAIL_FROM: ${EMAIL_FROM:-}
+      MAIL_HOST: ${MAIL_HOST:-smtp.gmail.com}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      SCHEDULER_CRON: ${SCHEDULER_CRON:-0 0 19 * * *}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  ml-service:
+    build:
+      context: ./ml-service
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ml_models:/app/models
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8080
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  ml_models:
