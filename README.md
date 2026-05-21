@@ -37,19 +37,54 @@ Sistema inteligente que coleta vagas de emprego de múltiplas plataformas, aplic
 - Métricas de acurácia do modelo ML
 - Estatísticas: taxa de callback, vagas por plataforma
 
-## Como Executar
+## Como rodar localmente
+
+### Pré-requisitos
+
+- **Docker** e **Docker Compose**
+- **Telegram Bot Token** — crie um bot via [@BotFather](https://t.me/BotFather) no Telegram
+
+### Passo a passo
 
 ```bash
-# Docker (recomendado)
-docker compose up -d
+# 1. Clone o repositório
+git clone https://github.com/fabriciojunio/JIS.git
+cd JIS
 
-# Banco de dados
-docker exec -it jis-db psql -U postgres -d jis
+# 2. Configure as variáveis de ambiente
+cp .env.example .env
+# Edite .env com suas credenciais (veja a seção abaixo)
+
+# 3. Suba todos os serviços
+docker compose up -d
 ```
+
+Após iniciar, acesse:
+- **Dashboard:** [http://localhost:3000](http://localhost:3000)
+- **API Spring Boot:** [http://localhost:8080](http://localhost:8080)
+- **API ML (Swagger):** [http://localhost:8001/docs](http://localhost:8001/docs)
+- **Banco de dados:** `docker exec -it jis-db psql -U postgres -d jis`
 
 ## Variáveis de Ambiente
 
-Consulte `.env.example` para todas as variáveis necessárias.
+Edite `.env` com suas credenciais:
+
+```env
+# Banco de dados PostgreSQL
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/jis
+SPRING_DATASOURCE_USERNAME=postgres
+SPRING_DATASOURCE_PASSWORD=senha_segura
+
+# Telegram — crie um bot em https://t.me/BotFather
+TELEGRAM_BOT_TOKEN=seu_bot_token_aqui
+TELEGRAM_CHAT_ID=seu_chat_id_aqui
+
+# Serviço ML (FastAPI)
+ML_SERVICE_URL=http://localhost:8001
+
+# Frontend
+NEXT_PUBLIC_API_URL=http://localhost:8080
+```
 
 ## Licença
 
