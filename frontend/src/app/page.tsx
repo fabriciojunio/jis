@@ -1,4 +1,5 @@
 import { getTopJobs, getTodayMetrics, getCallbackRate } from "@/lib/api";
+import { MOCK_JOBS, MOCK_METRICS } from "@/lib/mock-data";
 import { JobCard } from "@/components/JobCard";
 import type { Job, DailyMetrics } from "@/lib/types";
 import Link from "next/link";
@@ -17,6 +18,7 @@ async function fetchAll() {
     jobs: jobs.status === "fulfilled" ? jobs.value : ([] as Job[]),
     metrics: metrics.status === "fulfilled" ? metrics.value : (null as DailyMetrics | null),
     callbackRate: rate.status === "fulfilled" ? rate.value.callbackRate : 0,
+    apiOnline: jobs.status === "fulfilled",
   };
 }
 
@@ -24,11 +26,19 @@ export default async function Dashboard() {
   let jobs: Job[] = [];
   let metrics: DailyMetrics | null = null;
   let callbackRate = 0;
+  let apiOnline = false;
 
   try {
-    ({ jobs, metrics, callbackRate } = await fetchAll());
+    ({ jobs, metrics, callbackRate, apiOnline } = await fetchAll());
   } catch {
-    // API offline — renderiza com dados vazios
+    // API offline — usa dados de demonstração
+  }
+
+  const isDemo = !apiOnline;
+  if (isDemo) {
+    jobs = MOCK_JOBS;
+    metrics = MOCK_METRICS;
+    callbackRate = MOCK_METRICS.callbackRate;
   }
 
   const stats = [
@@ -40,6 +50,15 @@ export default async function Dashboard() {
 
   return (
     <div className="space-y-6">
+      {isDemo && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800 flex items-center gap-2">
+          <span>⚡</span>
+          <span>
+            <strong>Modo demonstração</strong> — backend offline. Os dados abaixo são exemplos de como o sistema funciona em produção.
+          </span>
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
@@ -66,22 +85,13 @@ export default async function Dashboard() {
         ))}
       </div>
 
-      {jobs.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-xl border border-dashed border-gray-200">
-          <p className="text-gray-400 text-lg">Nenhuma vaga encontrada.</p>
-          <p className="text-gray-400 text-sm mt-1">
-            Clique em &quot;Coletar agora&quot; para iniciar a busca, ou conecte o backend.
-          </p>
-        </div>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {jobs.map((job, i) => (
-            <JobCard key={job.id} job={job} rank={i + 1} />
-          ))}
-        </div>
-      )}
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {jobs.map((job, i) => (
+          <JobCard key={job.id} job={job} rank={i + 1} />
+        ))}
+      </div>
 
-      {jobs.length > 0 && (
+      {jobs.length > 0 && !isDemo && (
         <div className="text-center">
           <Link
             href="/vagas"
