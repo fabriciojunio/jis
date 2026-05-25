@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
   },
 
   compiler: {
-    removeConsole: process.env.NODE_ENV === "production" ? { exclude: [] } : false,
+    removeConsole: process.env.NODE_ENV === 'production',
   },
 
   env: {
