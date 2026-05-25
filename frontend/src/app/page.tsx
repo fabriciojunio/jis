@@ -6,7 +6,7 @@ import type { Job, DailyMetrics } from "@/lib/types";
 import Link from "next/link";
 import { collectAction } from "./actions";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 async function fetchAll() {
   const [jobs, metrics, rate] = await Promise.allSettled([
