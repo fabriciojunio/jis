@@ -1,13 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --brand-dark: #1a1a2e;
-  --brand-blue: #0f3460;
-  --brand-red: #e94560;
+  --brand-dark:    #1e1b4b;
+  --brand-mid:     #312e81;
+  --brand-blue:    #4f46e5;
+  --brand-sky:     #0ea5e9;
+  --brand-accent:  #8b5cf6;
+  --brand-red:     #e94560;
+  --brand-success: #10b981;
 }
 
 body {
-  @apply bg-gray-50 text-gray-900 antialiased;
+  @apply bg-slate-50 text-slate-900 antialiased;
+  font-family: 'DM Sans', system-ui, sans-serif;
 }
