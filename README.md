@@ -75,7 +75,7 @@ SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/jis
 SPRING_DATASOURCE_USERNAME=postgres
 SPRING_DATASOURCE_PASSWORD=senha_segura
 
-# Telegram — crie um bot em https://t.me/BotFather
+# Telegram: crie um bot em https://t.me/BotFather
 TELEGRAM_BOT_TOKEN=seu_bot_token_aqui
 TELEGRAM_CHAT_ID=seu_chat_id_aqui
 
