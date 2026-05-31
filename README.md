@@ -1,4 +1,4 @@
-﻿# JIS — Job Intelligence System 🤖
+﻿# JIS: Job Intelligence System 🤖
 
 Sistema inteligente que coleta vagas de emprego de múltiplas plataformas, aplica Machine Learning para pontuar compatibilidade e envia as melhores oportunidades diariamente via Telegram.
 
@@ -42,7 +42,7 @@ Sistema inteligente que coleta vagas de emprego de múltiplas plataformas, aplic
 ### Pré-requisitos
 
 - **Docker** e **Docker Compose**
-- **Telegram Bot Token** — crie um bot via [@BotFather](https://t.me/BotFather) no Telegram
+- **Telegram Bot Token**: crie um bot via [@BotFather](https://t.me/BotFather) no Telegram
 
 ### Passo a passo
 
