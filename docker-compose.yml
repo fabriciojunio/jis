@@ -11,7 +11,7 @@ services:
     environment:
       POSTGRES_DB: jis_db
       POSTGRES_USER: jis_user
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-jis_pass}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD obrigatório}
     ports:
       - "5432:5432"
     volumes:
