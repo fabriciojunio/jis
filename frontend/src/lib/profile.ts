@@ -27,6 +27,8 @@ export interface Profile {
   regioesAceitas: string[];
   /** Termos que indicam requisito eliminatório (experiência alta, clearance, etc.). */
   requisitosDuros: string[];
+  /** Empresas grandes/notáveis: estágio só vale a pena nelas. */
+  grandesEmpresas: string[];
   /** Projetos do portfólio — usados como contexto/keywords. */
   projetos: { nome: string; stack: string[] }[];
   /** Consultas de busca enviadas às fontes (LinkedIn, The Muse, etc.). */
@@ -46,7 +48,7 @@ export const PROFILE: Profile = {
     "jaú",
     "jau",
   ],
-  senioridade: ["junior", "júnior", "jr", "trainee", "estágio", "estagio", "pleno"],
+  senioridade: ["junior", "júnior", "jr", "trainee", "pleno"],
   salario: { min: 3000, ideal: 8000 },
 
   // Stack do candidato — quanto maior o peso, mais decisivo para o match.
@@ -207,6 +209,23 @@ export const PROFILE: Profile = {
     "ecuador",
     "venezuela",
     "costa rica",
+  ],
+
+  // Estágio só passa o filtro se a empresa estiver nesta lista (nome ou no título).
+  grandesEmpresas: [
+    "nubank", "ifood", "mercado livre", "mercadolivre", "mercado pago", "mercadolibre",
+    "stone", "pagseguro", "pagbank", "picpay", "c6 bank", "banco inter", "itaú", "itau",
+    "bradesco", "banco do brasil", "santander", "caixa", "btg", "xp inc", "xp investimentos",
+    "magalu", "magazine luiza", "americanas", "casas bahia", "via varejo", "renner",
+    "globo", "globant", "totvs", "locaweb", "vtex", "loft", "quintoandar", "gympass",
+    "wildlife", "ebanx", "dlocal", "ambev", "vale", "petrobras", "embraer", "natura",
+    "raia drogasil", "localiza", "ci&t", "ci e t", "thoughtworks", "dextra", "zup",
+    "luizalabs", "creditas", "neon", "will bank", "hotmart", "rd station", "resultados digitais",
+    "movile", "sinqia", "semantix", "olist", "cogna", "stefanini", "tivit",
+    "google", "microsoft", "amazon", "aws", "meta", "facebook", "apple", "ibm", "oracle",
+    "sap", "accenture", "deloitte", "capgemini", "dell", "hp", "intel", "nvidia", "uber",
+    "rappi", "spotify", "nubankk", "mercadopago", "despegar", "globant", "epam", "cognizant",
+    "infosys", "tcs", "salesforce", "adobe", "atlassian", "shopify", "stripe", "datadog",
   ],
 
   requisitosDuros: [
