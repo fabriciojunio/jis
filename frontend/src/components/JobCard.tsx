@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import type { Job } from "@/lib/types";
@@ -47,17 +47,17 @@ export function JobCard({ job, rank }: JobCardProps) {
     job.chanceLabel === "Alta"
       ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/10"
       : job.chanceLabel === "Média"
-        ? "text-amber-400 border-amber-500/30 bg-amber-500/10"
-        : "text-slate-400 border-slate-600/40 bg-slate-700/20";
+        ? "text-sky-400 border-sky-500/30 bg-sky-500/10"
+        : "text-stone-400 border-stone-600/40 bg-stone-700/20";
 
   return (
-    <div className="card p-5 flex flex-col hover:border-[#2c374e] transition-colors">
+    <div className="card p-5 flex flex-col hover:border-[#3b3326] transition-colors">
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1.5">
-            {rank && <span className="text-xs font-semibold text-slate-600">{rank}</span>}
+            {rank && <span className="text-xs font-semibold text-stone-600">{rank}</span>}
             {isNew && !applied && (
-              <span className="text-[10px] font-semibold uppercase tracking-wide bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 rounded px-1.5 py-0.5">
+              <span className="text-[10px] font-semibold uppercase tracking-wide bg-amber-500/15 text-amber-300 border border-amber-500/30 rounded px-1.5 py-0.5">
                 Novo
               </span>
             )}
@@ -67,8 +67,8 @@ export function JobCard({ job, rank }: JobCardProps) {
               </span>
             )}
           </div>
-          <h3 className="font-semibold text-slate-100 text-[15px] leading-snug">{job.title}</h3>
-          <p className="text-xs text-slate-500 mt-1">
+          <h3 className="font-semibold text-stone-100 text-[15px] leading-snug">{job.title}</h3>
+          <p className="text-xs text-stone-500 mt-1">
             {job.companyName ? `${job.companyName} · ` : ""}
             {job.location ?? "Remoto"}
           </p>
@@ -107,20 +107,20 @@ export function JobCard({ job, rank }: JobCardProps) {
         {(job.techs ?? []).slice(0, 5).map((t) => (
           <span key={t} className="chip">{t}</span>
         ))}
-        <span className="chip text-slate-500">{job.source}</span>
-        {quando && <span className="chip text-slate-600">{quando}</span>}
+        <span className="chip text-stone-500">{job.source}</span>
+        {quando && <span className="chip text-stone-600">{quando}</span>}
       </div>
 
       {job.description && (
         <div className="mb-3">
           <button
             onClick={() => setShowDesc((v) => !v)}
-            className="text-xs font-medium text-indigo-400 hover:text-indigo-300"
+            className="text-xs font-medium text-amber-400 hover:text-amber-300"
           >
             {showDesc ? "Ocultar descrição" : "Ver descrição completa"}
           </button>
           {showDesc && (
-            <p className="mt-2 text-sm text-slate-400 whitespace-pre-wrap leading-relaxed max-h-72 overflow-y-auto border-l-2 border-[#283041] pl-3">
+            <p className="mt-2 text-sm text-stone-400 whitespace-pre-wrap leading-relaxed max-h-72 overflow-y-auto border-l-2 border-[#3b3326] pl-3">
               {job.description}
             </p>
           )}
@@ -142,7 +142,7 @@ export function JobCard({ job, rank }: JobCardProps) {
           className={`flex-1 min-w-[100px] text-sm font-medium rounded-lg py-2 px-3 transition-colors border ${
             applied
               ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/30 cursor-default"
-              : "text-slate-300 border-[#283041] hover:border-emerald-500/60 hover:text-emerald-300"
+              : "text-stone-300 border-[#3b3326] hover:border-emerald-500/60 hover:text-emerald-300"
           }`}
         >
           {applied ? "Aplicado" : "Marcar aplicado"}
