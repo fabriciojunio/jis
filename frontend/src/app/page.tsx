@@ -1,4 +1,4 @@
-import { getJobs } from "@/lib/jobs";
+﻿import { getJobs } from "@/lib/jobs";
 import { JobCard } from "@/components/JobCard";
 import { PlanoDoDia } from "@/components/PlanoDoDia";
 import Link from "next/link";
@@ -26,12 +26,12 @@ export default async function Dashboard() {
 
       <div className="flex items-end justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-100 tracking-tight">Dashboard</h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <h1 className="text-2xl font-bold text-stone-100 tracking-tight">Dashboard</h1>
+          <p className="text-sm text-stone-400 mt-1">
             Foco no Brasil (remoto ou Bauru): só vagas com chance real, stack compatível, nível adequado e recentes. Internacional aparece abaixo.
           </p>
         </div>
-        <span className="text-xs text-slate-500">
+        <span className="text-xs text-stone-500">
           Atualizado {new Date(collectedAt).toLocaleString("pt-BR")}
         </span>
       </div>
@@ -39,16 +39,16 @@ export default async function Dashboard() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {stats.map((s) => (
           <div key={s.label} className="card p-4">
-            <p className="text-2xl font-bold text-slate-100">{s.value}</p>
-            <p className="text-xs text-slate-500 mt-1">{s.label}</p>
+            <p className="text-2xl font-bold text-stone-100">{s.value}</p>
+            <p className="text-xs text-stone-500 mt-1">{s.label}</p>
           </div>
         ))}
       </div>
 
       {jobs.length === 0 ? (
         <div className="card border-dashed text-center py-16">
-          <p className="text-slate-400">Nenhuma vaga encontrada agora.</p>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-stone-400">Nenhuma vaga encontrada agora.</p>
+          <p className="text-sm text-stone-500 mt-1">
             As fontes podem estar temporariamente indisponíveis. Recarregue em alguns minutos.
           </p>
         </div>
@@ -60,7 +60,7 @@ export default async function Dashboard() {
             ))}
           </div>
           <div className="text-center">
-            <Link href="/vagas" className="text-sm font-medium text-indigo-400 hover:text-indigo-300">
+            <Link href="/vagas" className="text-sm font-medium text-amber-400 hover:text-amber-300">
               Ver todas as {jobs.length} vagas
             </Link>
           </div>

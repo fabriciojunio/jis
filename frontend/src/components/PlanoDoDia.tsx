@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -27,27 +27,27 @@ export function PlanoDoDia() {
     <div className="card p-5">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h2 className="font-semibold text-slate-100">Plano do dia</h2>
-          <p className="text-sm text-slate-400 mt-0.5">
+          <h2 className="font-semibold text-stone-100">Plano do dia</h2>
+          <p className="text-sm text-stone-400 mt-0.5">
             {bateu
               ? `Meta concluída: ${p.hoje} candidatura(s) hoje. Continue enquanto há vagas novas.`
               : `Aplique em ${p.faltam} vaga(s) hoje e marque "aplicado" ao enviar cada uma.`}
           </p>
         </div>
         <div className="text-right">
-          <p className="text-xl font-bold text-slate-100">{p.streak}</p>
-          <p className="text-xs text-slate-500">dias seguidos</p>
+          <p className="text-xl font-bold text-stone-100">{p.streak}</p>
+          <p className="text-xs text-stone-500">dias seguidos</p>
         </div>
       </div>
 
       <div className="mt-4 flex items-center gap-3">
-        <div className="flex-1 h-2 bg-[#1e2638] rounded-full overflow-hidden">
+        <div className="flex-1 h-2 bg-[#2b251c] rounded-full overflow-hidden">
           <div
-            className={`h-full rounded-full transition-all ${bateu ? "bg-emerald-500" : "bg-indigo-500"}`}
+            className={`h-full rounded-full transition-all ${bateu ? "bg-emerald-500" : "bg-amber-500"}`}
             style={{ width: `${pct}%` }}
           />
         </div>
-        <span className="text-sm font-semibold text-slate-300">
+        <span className="text-sm font-semibold text-stone-300">
           {p.hoje}/{p.meta}
         </span>
         <Link href="/vagas" className="btn-ghost py-1.5 px-3 text-xs">
