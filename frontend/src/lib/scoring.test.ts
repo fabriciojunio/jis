@@ -122,6 +122,18 @@ describe("aprovada (gate de altas chances)", () => {
     const j = scoreJob(makeJob({ title: "Customer Support Agent", description: "atendimento ao cliente", remote: true, location: "Worldwide" }));
     expect(aprovada(j)).toBe(false);
   });
+
+  it("reprova estágio em empresa pequena, aprova em empresa grande", () => {
+    const pequena = scoreJob(
+      makeJob({ title: "Estágio em Desenvolvimento Java", companyName: "Startup XYZ", remote: true, location: "Brazil" })
+    );
+    expect(aprovada(pequena)).toBe(false);
+
+    const grande = scoreJob(
+      makeJob({ title: "Estágio em Desenvolvimento Java", companyName: "Nubank", remote: true, location: "Brazil" })
+    );
+    expect(aprovada(grande)).toBe(true);
+  });
 });
 
 describe("isRemoteOrBauru / extractTechs", () => {
