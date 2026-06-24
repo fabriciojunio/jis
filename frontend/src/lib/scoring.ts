@@ -289,5 +289,11 @@ export function aprovada(job: Job): boolean {
   const coreNoTitulo = PROFILE.coreTechs.some((t) => titulo.includes(t));
   if (!coreNoTitulo && !ehVagaDev(titulo)) return false;
 
+  // Estágio só vale a pena em empresa grande/notável.
+  if (/est[áa]gio|estagi|internship|\bintern\b/.test(text)) {
+    const empresa = `${job.companyName} ${job.title}`.toLowerCase();
+    if (!PROFILE.grandesEmpresas.some((e) => empresa.includes(e))) return false;
+  }
+
   return (job.chance ?? 0) >= CHANCE_MIN;
 }
