@@ -162,6 +162,20 @@ function hardReqPenalty(text: string): number {
   return PROFILE.requisitosDuros.some((r) => text.includes(r)) ? 0.2 : 0;
 }
 
+/**
+ * Prioriza o Brasil: o foco é Bauru ou remoto no Brasil. Vagas brasileiras
+ * sobem na frente; LATAM e internacional ficam abaixo (mas continuam visíveis).
+ */
+export function brasilBoost(job: Job): number {
+  const local = String(job.location ?? "").toLowerCase();
+  const texto = `${job.title} ${job.description ?? ""}`.toLowerCase();
+  if (PROFILE.cidadesAceitas.some((c) => local.includes(c))) return 0.2; // Bauru/região
+  if (/brasil|brazil/.test(local)) return 0.13; // Brasil explícito no local
+  if (/trabalho remoto|home office|vaga remota|portugu/.test(texto)) return 0.07; // sinais de vaga BR
+  if (/latam|latin america|américa latina|america latina|south america|americas/.test(local)) return 0.03;
+  return 0; // internacional puro
+}
+
 const REF = 14;
 
 export function scoreJob(job: Job): Job {
@@ -186,7 +200,10 @@ export function scoreJob(job: Job): Job {
   const rf = recencyFit(job.publishedAt);
   const gf = regionFit(job);
   const base = 0.42 * sm.ratio + 0.2 * sf.fit + 0.13 * rf + 0.25 * gf.fit;
-  const chance = Math.max(0, Math.min(100, Math.round((base - hardReqPenalty(text)) * 100)));
+  const chance = Math.max(
+    0,
+    Math.min(100, Math.round((base - hardReqPenalty(text) + brasilBoost(job)) * 100))
+  );
   const chanceLabel = chance >= 65 ? "Alta" : chance >= 45 ? "Média" : "Baixa";
 
   const fitReasons = buildReasons(sm, sf.label ?? label, rf, gf, job);
@@ -221,15 +238,19 @@ function buildReasons(
   job: Job
 ): string[] {
   const reasons: string[] = [];
+  const local = String(job.location ?? "").toLowerCase();
+
   if (sm.cores.length) {
     const nomes = [...new Set(sm.cores.map(nomeTech))].slice(0, 3);
     reasons.push(`Stack alinhada (${nomes.join(", ")})`);
   }
-  if (level && ["Júnior", "Pleno", "Trainee", "Estágio"].includes(level)) {
+  if (level && ["Júnior", "Pleno", "Trainee"].includes(level)) {
     reasons.push(`Nível ${level}`);
   }
-  if (job.remote && gf.fit >= 1) reasons.push("Remoto aceita Brasil/LATAM");
-  else if (!job.remote && gf.fit >= 1) reasons.push("Em Bauru/região");
+  if (PROFILE.cidadesAceitas.some((c) => local.includes(c))) reasons.push("Em Bauru ou região");
+  else if (/brasil|brazil/.test(local)) reasons.push("Vaga no Brasil");
+  else if (job.remote && gf.fit >= 1) reasons.push("Remoto, aceita Brasil");
+
   if (rf >= 0.85) reasons.push("Publicada há poucos dias");
   if (job.salaryInformed) reasons.push("Salário informado");
   return reasons;

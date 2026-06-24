@@ -15,6 +15,16 @@ function dedupeKey(job: Job): string {
   return `${job.title}|${job.companyName}`.toLowerCase().replace(/\s+/g, " ");
 }
 
+/** Rank de região para o foco padrão: Bauru > Brasil > LATAM > internacional. */
+function regionRank(job: Job): number {
+  const loc = String(job.location ?? "").toLowerCase();
+  if (/bauru|agudos|jaú|jau|lençóis|lencois|pederneiras/.test(loc)) return 3;
+  if (/brasil|brazil/.test(loc)) return 2;
+  if (/latam|latin america|américa latina|america latina|south america|americas|argentina|chile|colombia|peru|uruguay|mexico|méxico/.test(loc))
+    return 1;
+  return 0;
+}
+
 function dedupe(jobs: Job[]): Job[] {
   const seen = new Map<string, Job>();
   for (const job of jobs) {
@@ -43,8 +53,9 @@ export async function getJobs(): Promise<JobsPayload> {
     .filter(aprovada);
 
   const jobs = dedupe(scored).sort((a, b) => {
-    const dc = (b.chance ?? 0) - (a.chance ?? 0);
-    return dc !== 0 ? dc : (b.finalScore ?? 0) - (a.finalScore ?? 0);
+    const dr = regionRank(b) - regionRank(a); // Brasil/Bauru primeiro
+    if (dr !== 0) return dr;
+    return (b.chance ?? 0) - (a.chance ?? 0);
   });
 
   return { jobs, sources: results, collectedAt: new Date().toISOString() };

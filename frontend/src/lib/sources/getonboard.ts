@@ -45,7 +45,9 @@ export function mapGetOnBoard(j: GobJob): Job | null {
   const location = remote ? zone || countries || "LATAM" : cities || countries || "LATAM";
 
   const tags = Array.isArray(a.tags) ? a.tags.filter((t): t is string => typeof t === "string") : [];
-  const company = asText(a.company) || "Empresa";
+  // A API não devolve o nome da empresa de forma confiável; deixa vazio e o card
+  // mostra a fonte em vez de um "Empresa" genérico.
+  const company = asText(a.company);
 
   return baseJob({
     id: `getonbrd:${j.id}`,
