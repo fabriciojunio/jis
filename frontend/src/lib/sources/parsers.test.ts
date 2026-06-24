@@ -3,6 +3,7 @@ import { parseLinkedinHtml } from "./linkedin";
 import { parseWwrRss } from "./weworkremotely";
 import { mapRemotive } from "./remotive";
 import { mapRemoteOk } from "./remoteok";
+import { mapGetOnBoard } from "./getonboard";
 
 describe("parseLinkedinHtml", () => {
   const html = `
@@ -86,5 +87,25 @@ describe("mapRemotive / mapRemoteOk", () => {
     expect(mapRemoteOk({ id: undefined, position: undefined })).toBeNull();
     const j = mapRemoteOk({ id: "5", position: "Dev", company: "Initech" });
     expect(j?.id).toBe("remoteok:5");
+  });
+
+  it("normaliza vaga remota do Get on Board (LATAM)", () => {
+    const j = mapGetOnBoard({
+      id: "dev-java-acme",
+      links: { public_url: "https://www.getonbrd.com/jobs/dev-java-acme" },
+      attributes: {
+        title: "Desarrollador Java Junior",
+        description: "<p>Java y Spring</p>",
+        remote: true,
+        remote_modality: "fully_remote",
+        remote_zone: "latam",
+        tags: ["java", "spring"],
+        published_at: 1782226510,
+      },
+    });
+    expect(j?.id).toBe("getonbrd:dev-java-acme");
+    expect(j?.remote).toBe(true);
+    expect(j?.location).toBe("latam");
+    expect(j?.publishedAt).toMatch(/^20/);
   });
 });
