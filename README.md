@@ -14,7 +14,9 @@ Agregador de vagas que coleta oportunidades reais de várias plataformas, pontua
   - **Senioridade**: aplicar acima do nível tem retorno baixíssimo. → filtra sênior/lead/gestão e "X+ anos".
   - **Região**: vaga remota restrita a outro país não contrata quem está no Brasil. → mantém só Brasil/LATAM/Worldwide; descarta US-only, Europe-only, etc.
   - **Regra de ouro do perfil**: remoto OU Bauru. Cada card mostra os motivos do match e o selo de Chance (Alta/Média).
-- **Gera currículo específico para a vaga** usando a Claude: o botão "Gerar currículo" monta um prompt com todos os dados da vaga + o seu perfil e devolve o currículo pronto. Sem chave configurada, o sistema avisa que está sem token e entrega o prompt para você gerar manualmente.
+- **Gera currículo específico para a vaga**: o botão "Montar prompt do currículo" monta um prompt com todos os dados da vaga + o seu perfil. Você copia e cola no [Claude](https://claude.ai) para receber o currículo sob medida, sem custo e sem configuração.
+- **Plano do dia e follow-up**: meta diária de candidaturas, sequência de dias ativos e lembrete de follow-up, com base em pesquisa de busca de emprego (metas e proatividade aumentam a chance de contratação).
+- **Marca vagas novas** desde a última visita e mantém marcadas as que você já gerou currículo ou enviou candidatura.
 - **Acompanha candidaturas** (funil de seleção) e **métricas** (taxa de callback), salvos localmente no navegador.
 
 ## Stack
@@ -32,17 +34,7 @@ npm install
 npm run dev
 ```
 
-Acesse [http://localhost:3000](http://localhost:3000).
-
-Para gerar currículos com a Claude dentro do sistema, crie `frontend/.env.local`:
-
-```env
-ANTHROPIC_API_KEY=sua_chave_aqui
-# opcional
-JIS_CV_MODEL=claude-opus-4-8
-```
-
-Sem a chave, tudo funciona — a geração de currículo mostra o aviso "sem token" e disponibiliza o prompt pronto para copiar.
+Acesse [http://localhost:3000](http://localhost:3000). Não é preciso configurar nenhuma variável de ambiente: as vagas vêm de fontes públicas e o currículo é gerado copiando o prompt para o Claude.
 
 ## Testes
 
@@ -59,10 +51,10 @@ Todo o seu perfil (skills com pesos, stack incompatível, níveis aceitos, cidad
 
 ```bash
 cd frontend
-vercel
+vercel --prod
 ```
 
-No painel da Vercel, em **Settings → Environment Variables**, adicione `ANTHROPIC_API_KEY` para habilitar a geração automática de currículos em produção.
+Um cron diário (definido em `vercel.json`) atualiza as vagas automaticamente uma vez por dia.
 
 ## Licença
 
