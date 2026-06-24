@@ -1,20 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --bg:        #0a0e17;
-  --surface:   #111726;
-  --surface-2: #0d1320;
-  --border:    #1e2638;
-  --border-2:  #283041;
-  --text:      #e2e8f0;
-  --muted:     #94a3b8;
-  --faint:     #64748b;
-  --primary:   #6366f1;
-  --primary-2: #4f46e5;
+  --bg:        #13110d;
+  --surface:   #1c1812;
+  --surface-2: #16130e;
+  --border:    #2b251c;
+  --border-2:  #3b3326;
+  --text:      #efe8da;
+  --muted:     #a89f8c;
+  --faint:     #6f6754;
+  --gold:      #e0a82e;
+  --gold-2:    #c8941a;
 }
 
 body {
@@ -22,6 +22,10 @@ body {
   color: var(--text);
   font-family: 'DM Sans', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .font-display {
+  font-family: 'Sora', system-ui, sans-serif;
 }
 
 @layer components {
@@ -32,26 +36,36 @@ body {
   }
 
   .input {
-    @apply w-full rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-500
-           focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/60;
+    @apply w-full rounded-lg px-3 py-2 text-sm placeholder-[#6f6754]
+           focus:outline-none focus:ring-2;
     background-color: var(--surface-2);
     border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .input:focus {
+    border-color: var(--gold);
+    --tw-ring-color: rgba(224, 168, 46, 0.25);
   }
 
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold
-           text-white bg-indigo-600 hover:bg-indigo-500 transition-colors
-           disabled:opacity-50 disabled:cursor-not-allowed;
+           transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+    background-color: var(--gold);
+    color: #1b1813;
   }
+  .btn-primary:hover { background-color: #f0bd4a; }
 
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium
-           text-slate-300 border transition-colors hover:text-white hover:border-indigo-500/70;
-    border-color: var(--border-2);
+           transition-colors;
+    color: var(--muted);
+    border: 1px solid var(--border-2);
   }
+  .btn-ghost:hover { color: var(--text); border-color: var(--gold); }
 
   .label {
-    @apply block text-xs font-medium text-slate-400 mb-1;
+    @apply block text-xs font-medium mb-1;
+    color: var(--muted);
   }
 
   .chip {
@@ -62,7 +76,6 @@ body {
   }
 }
 
-/* Barra de rolagem discreta no tema escuro */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-thumb { background: #1e2638; border-radius: 6px; }
+::-webkit-scrollbar-thumb { background: #2b251c; border-radius: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }

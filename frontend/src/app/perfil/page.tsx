@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, type ReactNode } from "react";
 import {
@@ -64,19 +64,19 @@ export default function PerfilPage() {
     <div className="space-y-6">
       <div className="flex items-end justify-between flex-wrap gap-2">
         <div>
-          <h1 className="text-2xl font-bold text-slate-100 tracking-tight">Meu perfil</h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <h1 className="text-2xl font-bold text-stone-100 tracking-tight">Meu perfil</h1>
+          <p className="text-sm text-stone-400 mt-1">
             Seus dados alimentam o currículo e a priorização das vagas. Tudo é salvo automaticamente.
           </p>
         </div>
-        <span className={`text-xs ${salvo ? "text-emerald-400" : "text-slate-600"}`}>
+        <span className={`text-xs ${salvo ? "text-emerald-400" : "text-stone-600"}`}>
           {salvo ? "Salvo" : `Atualizado ${new Date(p.atualizadoEm).toLocaleString("pt-BR")}`}
         </span>
       </div>
 
       {/* Dados básicos */}
       <section className="card p-5 space-y-4">
-        <h2 className="font-semibold text-slate-100">Dados</h2>
+        <h2 className="font-semibold text-stone-100">Dados</h2>
         <div className="grid sm:grid-cols-2 gap-4">
           <Field label="Nome" value={p.nome} onChange={(v) => update({ nome: v })} />
           <Field label="Título profissional" value={p.titulo} onChange={(v) => update({ titulo: v })} />
@@ -95,7 +95,7 @@ export default function PerfilPage() {
 
       {/* Conexões */}
       <section className="card p-5 space-y-4">
-        <h2 className="font-semibold text-slate-100">Conexões</h2>
+        <h2 className="font-semibold text-stone-100">Conexões</h2>
 
         <div className="space-y-2">
           <label className="label">GitHub</label>
@@ -116,7 +116,7 @@ export default function PerfilPage() {
               {ghLoading ? "Importando..." : "Importar do GitHub"}
             </button>
           </div>
-          {ghStatus && <p className="text-xs text-slate-400">{ghStatus}</p>}
+          {ghStatus && <p className="text-xs text-stone-400">{ghStatus}</p>}
         </div>
 
         <div className="space-y-2">
@@ -127,7 +127,7 @@ export default function PerfilPage() {
             value={p.links.linkedin}
             onChange={(e) => update({ links: { ...p.links, linkedin: e.target.value } })}
           />
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-stone-500">
             O LinkedIn não libera importação automática de experiências e formação para apps de terceiros.
             Adicione esses itens manualmente nas seções abaixo.
           </p>
@@ -142,7 +142,7 @@ export default function PerfilPage() {
 
       {/* Preferências */}
       <section className="card p-5 space-y-4">
-        <h2 className="font-semibold text-slate-100">Preferências de busca</h2>
+        <h2 className="font-semibold text-stone-100">Preferências de busca</h2>
         <div>
           <label className="label">Prioridade de região</label>
           <div className="grid sm:grid-cols-2 gap-2">
@@ -152,12 +152,12 @@ export default function PerfilPage() {
                 onClick={() => update({ prioridade: op.value })}
                 className={`text-left rounded-lg border p-3 transition-colors ${
                   p.prioridade === op.value
-                    ? "border-indigo-500/70 bg-indigo-500/10"
-                    : "border-[#283041] hover:border-indigo-500/40"
+                    ? "border-amber-500/70 bg-amber-500/10"
+                    : "border-[#3b3326] hover:border-amber-500/40"
                 }`}
               >
-                <p className="text-sm font-medium text-slate-200">{op.label}</p>
-                <p className="text-xs text-slate-500 mt-0.5">{op.hint}</p>
+                <p className="text-sm font-medium text-stone-200">{op.label}</p>
+                <p className="text-xs text-stone-500 mt-0.5">{op.hint}</p>
               </button>
             ))}
           </div>
@@ -176,7 +176,7 @@ export default function PerfilPage() {
                     })
                   }
                   className={`px-3 py-1.5 rounded-lg text-sm border transition-colors ${
-                    on ? "bg-indigo-600 border-indigo-600 text-white" : "border-[#283041] text-slate-400 hover:text-slate-200"
+                    on ? "bg-amber-600 border-amber-600 text-white" : "border-[#3b3326] text-stone-400 hover:text-stone-200"
                   }`}
                 >
                   {n}
@@ -189,7 +189,7 @@ export default function PerfilPage() {
 
       {/* Skills */}
       <section className="card p-5 space-y-3">
-        <h2 className="font-semibold text-slate-100">Habilidades</h2>
+        <h2 className="font-semibold text-stone-100">Habilidades</h2>
         <TagInput
           values={p.skills}
           onChange={(skills) => update({ skills })}
@@ -310,7 +310,7 @@ function TagInput({
         {values.map((v) => (
           <span key={v} className="chip flex items-center gap-1.5">
             {v}
-            <button onClick={() => onChange(values.filter((x) => x !== v))} className="text-slate-500 hover:text-red-400">
+            <button onClick={() => onChange(values.filter((x) => x !== v))} className="text-stone-500 hover:text-red-400">
               x
             </button>
           </span>
@@ -348,17 +348,17 @@ function ListSection<T extends object>({
   return (
     <section className="card p-5 space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="font-semibold text-slate-100">{title}</h2>
+        <h2 className="font-semibold text-stone-100">{title}</h2>
         <button onClick={() => onChange([...items, { ...empty }])} className="btn-ghost py-1.5 px-3 text-xs">
           Adicionar
         </button>
       </div>
       {items.length === 0 ? (
-        <p className="text-sm text-slate-600">Nenhum item ainda.</p>
+        <p className="text-sm text-stone-600">Nenhum item ainda.</p>
       ) : (
         <div className="space-y-4">
           {items.map((item, i) => (
-            <div key={i} className="rounded-lg border border-[#1e2638] p-4 space-y-3 relative">
+            <div key={i} className="rounded-lg border border-[#2b251c] p-4 space-y-3 relative">
               {render(item, (patch) => {
                 const next = [...items];
                 next[i] = { ...items[i], ...patch };
@@ -366,7 +366,7 @@ function ListSection<T extends object>({
               })}
               <button
                 onClick={() => onChange(items.filter((_, j) => j !== i))}
-                className="absolute top-3 right-3 text-xs text-slate-500 hover:text-red-400"
+                className="absolute top-3 right-3 text-xs text-stone-500 hover:text-red-400"
               >
                 Remover
               </button>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import type { Job } from "@/lib/types";
@@ -29,32 +29,32 @@ export function CvPanel({ job, onGenerated }: { job: Job; onGenerated?: () => vo
   }
 
   return (
-    <div className="mt-3 border-t border-[#1e2638] pt-3">
+    <div className="mt-3 border-t border-[#2b251c] pt-3">
       {!prompt ? (
         <button onClick={gerar} className="btn-primary">
           Montar prompt do currículo
         </button>
       ) : (
         <div>
-          <p className="text-xs text-slate-400 mb-2">
+          <p className="text-xs text-stone-400 mb-2">
             Copie o prompt abaixo e cole no{" "}
             <a
               href="https://claude.ai"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-indigo-400 hover:text-indigo-300 underline"
+              className="text-amber-400 hover:text-amber-300 underline"
             >
               Claude
             </a>{" "}
             para gerar o currículo sob medida para esta vaga.
           </p>
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-semibold text-slate-500">Prompt pronto</span>
-            <button onClick={() => copiar(prompt)} className="text-xs text-indigo-400 hover:text-indigo-300">
+            <span className="text-xs font-semibold text-stone-500">Prompt pronto</span>
+            <button onClick={() => copiar(prompt)} className="text-xs text-amber-400 hover:text-amber-300">
               {copiado ? "Copiado" : "Copiar prompt"}
             </button>
           </div>
-          <pre className="text-xs text-slate-300 whitespace-pre-wrap bg-[#0d1320] border border-[#1e2638] rounded-lg p-3 max-h-96 overflow-y-auto font-sans">
+          <pre className="text-xs text-stone-300 whitespace-pre-wrap bg-[#16130e] border border-[#2b251c] rounded-lg p-3 max-h-96 overflow-y-auto font-sans">
             {prompt}
           </pre>
         </div>

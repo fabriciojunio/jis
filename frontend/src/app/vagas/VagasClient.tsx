@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { JobCard } from "@/components/JobCard";
@@ -72,8 +72,8 @@ export function VagasClient({ jobs }: { jobs: Job[] }) {
   return (
     <div className="space-y-5">
       <div className="flex items-end justify-between">
-        <h1 className="text-2xl font-bold text-slate-100 tracking-tight">Vagas</h1>
-        <span className="text-sm text-slate-500">{filtradas.length} vagas</span>
+        <h1 className="text-2xl font-bold text-stone-100 tracking-tight">Vagas</h1>
+        <span className="text-sm text-stone-500">{filtradas.length} vagas</span>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
@@ -91,8 +91,8 @@ export function VagasClient({ jobs }: { jobs: Job[] }) {
               onClick={() => setFiltro(f.value)}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border ${
                 filtro === f.value
-                  ? "bg-indigo-600 border-indigo-600 text-white"
-                  : "border-[#283041] text-slate-400 hover:text-slate-200 hover:border-indigo-500/60"
+                  ? "bg-amber-600 border-amber-600 text-white"
+                  : "border-[#3b3326] text-stone-400 hover:text-stone-200 hover:border-amber-500/60"
               }`}
             >
               {f.label}
@@ -102,7 +102,7 @@ export function VagasClient({ jobs }: { jobs: Job[] }) {
       </div>
 
       {filtradas.length === 0 ? (
-        <div className="text-center py-16 text-slate-500">Nenhuma vaga com esses filtros.</div>
+        <div className="text-center py-16 text-stone-500">Nenhuma vaga com esses filtros.</div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {filtradas.map((job, i) => (

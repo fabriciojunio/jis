@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import type { Application } from "@/lib/types";
@@ -38,7 +38,7 @@ export default function MetricasPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-slate-100 tracking-tight">Métricas</h1>
+      <h1 className="text-2xl font-bold text-stone-100 tracking-tight">Métricas</h1>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {cards.map((c) => (
@@ -46,32 +46,32 @@ export default function MetricasPage() {
             key={c.label}
             className={`rounded-xl border p-4 ${
               c.highlight
-                ? "bg-indigo-600/15 border-indigo-500/30"
+                ? "bg-amber-600/15 border-amber-500/30"
                 : "card"
             }`}
           >
-            <p className={`text-2xl font-bold ${c.highlight ? "text-indigo-200" : "text-slate-100"}`}>
+            <p className={`text-2xl font-bold ${c.highlight ? "text-amber-200" : "text-stone-100"}`}>
               {c.value}
             </p>
-            <p className="text-xs mt-1 text-slate-500">{c.label}</p>
+            <p className="text-xs mt-1 text-stone-500">{c.label}</p>
           </div>
         ))}
       </div>
 
       <div className="card p-5">
-        <h2 className="font-semibold text-slate-100 mb-4">Funil de candidaturas</h2>
+        <h2 className="font-semibold text-stone-100 mb-4">Funil de candidaturas</h2>
         {total === 0 ? (
-          <p className="text-slate-500 text-center py-8">
+          <p className="text-stone-500 text-center py-8">
             Sem dados ainda. Marque vagas como aplicadas para acompanhar seu funil.
           </p>
         ) : (
           <div className="space-y-2">
             {porEstagio.map((e) => (
               <div key={e.stage} className="flex items-center gap-3">
-                <span className="text-sm text-slate-400 w-24 shrink-0">{e.label}</span>
-                <div className="flex-1 h-6 bg-[#0d1320] rounded overflow-hidden">
+                <span className="text-sm text-stone-400 w-24 shrink-0">{e.label}</span>
+                <div className="flex-1 h-6 bg-[#16130e] rounded overflow-hidden">
                   <div
-                    className="h-full bg-indigo-600 rounded flex items-center justify-end pr-2"
+                    className="h-full bg-amber-600 rounded flex items-center justify-end pr-2"
                     style={{ width: `${Math.max((e.count / maxCount) * 100, e.count ? 8 : 0)}%` }}
                   >
                     {e.count > 0 && <span className="text-xs text-white font-medium">{e.count}</span>}
