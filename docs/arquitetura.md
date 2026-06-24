@@ -1,42 +1,44 @@
-﻿# Arquitetura do JIS
+# Arquitetura do JIS
 
-## Visão Geral
+## Visão geral
 
-O JIS é composto por 3 serviços independentes que se comunicam via HTTP REST.
+Aplicação Next.js única (Node/TypeScript). Não há backend separado, banco de dados nem serviço de ML: coleta, pontuação e geração de currículo rodam na própria aplicação.
 
-## Fluxo de Dados
+## Fluxo de dados
 
-1. **Coleta** (diária, às 18h30): O backend Spring Boot executa scrapers para cada plataforma
-2. **Scoring** (após coleta): Cada vaga é enviada ao serviço ML para receber uma pontuação 0-100
-3. **Notificação** (diária, às 19h): As top 10 vagas são enviadas via Telegram Bot
-4. **Dashboard**: Frontend exibe vagas, candidaturas e métricas em tempo real
+1. **Coleta** — `lib/sources/*` busca vagas das 8 fontes em paralelo (tolerante a falhas; uma fonte fora do ar não derruba as outras).
+2. **Filtro e pontuação** — `lib/jobs.ts` mantém apenas vagas elegíveis (remoto ou Bauru), aplica o motor de score (`lib/scoring.ts`) baseado no perfil (`lib/profile.ts`), deduplica e ordena.
+3. **Cache** — as fontes têm cache de 1h; as páginas e a rota `/api/jobs` usam ISR de 30 min.
+4. **UI** — dashboard, lista de vagas, candidaturas e métricas. Candidaturas e métricas são persistidas no `localStorage`.
+5. **Currículo** — a rota `/api/cv` monta o prompt da vaga + perfil e chama a Claude (`@anthropic-ai/sdk`). Sem `ANTHROPIC_API_KEY`, devolve o aviso "sem token" e o prompt pronto.
 
-## Backend Spring Boot
+## Fontes de vagas
 
-### Padrões Utilizados
-- **Strategy Pattern**: Cada scraper implementa `ScraperStrategy`
-- **Factory Pattern**: `ScraperFactory` instancia o scraper correto por plataforma
-- **Repository Pattern**: Acesso ao banco via Spring Data JPA
-- **Service Layer**: Lógica de negócio isolada dos controllers
+| Fonte | Cobertura | Formato |
+|-------|-----------|---------|
+| LinkedIn (guest) | Bauru, remoto BR e internacional | HTML (parser próprio) |
+| Remotive, RemoteOK, Jobicy, Himalayas, Arbeitnow, The Muse | Remoto internacional | JSON |
+| WeWorkRemotely | Remoto (programação) | RSS/XML |
 
-### Endpoints Principais
-| Método | Rota | Descrição |
-|--------|------|-----------|
-| GET | /api/v1/jobs/top | Top vagas por score |
-| POST | /api/v1/jobs/collect | Disparar coleta manual |
-| GET | /api/v1/metrics/today | Métricas do dia |
-| POST | /api/v1/applications/job/{id} | Registrar candidatura |
+## Motor de pontuação
 
-## Serviço ML (FastAPI)
+Soma ponderada de: techs do perfil (positivo) e incompatíveis (negativo), nível de senioridade, modo de trabalho (remoto/Bauru sobem; presencial fora da região afunda), salário e recência. O resultado bruto é normalizado para 0–100. A regra de ouro: **a vaga só é elegível se for remota OU em Bauru/região**.
 
-### Features Utilizadas
-- Presença de keywords de tech stack (TypeScript, React, Java, etc.)
-- Nível de senioridade detectado no título
-- Regime de trabalho (remoto, híbrido, presencial)
-- Faixa salarial (quando disponível)
-- Score de compatibilidade das skills
+## Personalização
 
-### Modelo
-- **Algoritmo**: Random Forest Classifier
-- **Validação**: Walk-Forward com TimeSeriesSplit
-- **Atualização**: Re-treina mensalmente com novos dados de candidaturas
+Tudo que define "vaga boa" está em `lib/profile.ts`: pesos das tecnologias, stack incompatível, níveis aceitos, cidades da região de Bauru, faixa salarial, projetos e termos de busca enviados às fontes.
+
+## Estrutura
+
+```
+frontend/src/
+  app/            páginas (dashboard, vagas, candidaturas, métricas) + rotas /api/jobs e /api/cv
+  components/     JobCard, CvPanel, ScoreBar, Navbar
+  lib/
+    profile.ts    perfil do candidato (parâmetros centrais)
+    scoring.ts    motor de pontuação + elegibilidade
+    jobs.ts       agregação, filtro, dedupe, ordenação
+    cv-prompt.ts  montagem do prompt de currículo
+    applications.ts  candidaturas em localStorage
+    sources/      uma fonte por arquivo + agregador
+```

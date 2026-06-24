@@ -1,90 +1,68 @@
-﻿# JIS: Job Intelligence System 🤖
+# JIS: Job Intelligence System
 
-Sistema inteligente que coleta vagas de emprego de múltiplas plataformas, aplica Machine Learning para pontuar compatibilidade e envia as melhores oportunidades diariamente via Telegram.
+Agregador de vagas que coleta oportunidades reais de várias plataformas, pontua cada uma pela compatibilidade com o seu perfil e foca no que interessa: **vagas em Bauru ou remotas** dentro da sua stack. Para cada vaga, gera um **currículo sob medida com a Claude**, direto na tela.
 
-## Arquitetura
+## O que faz
 
-```
-┌─────────────┐    ┌──────────────┐    ┌─────────────┐
-│  Gupy +     │───▶│ Spring Boot  │───▶│  FastAPI    │
-│  GeekHunter │    │  Scraping    │    │  ML Score   │
-└─────────────┘    └──────┬───────┘    └──────┬──────┘
-                          │                    │
-┌─────────────┐    ┌──────▼───────┐    ┌──────▼──────┐
-│  Telegram   │◀───│  PostgreSQL  │◀───│  Random     │
-│  Bot        │    │  + Dashboard │    │  Forest     │
-└─────────────┘    └──────────────┘    └─────────────┘
-```
+- Coleta vagas reais de **8 fontes** (sem necessidade de API key):
+  - **LinkedIn** (API guest pública) — Bauru, remoto no Brasil e internacional
+  - **Remotive, RemoteOK, Jobicy, Himalayas, Arbeitnow, The Muse** — remoto internacional
+  - **WeWorkRemotely** — feed RSS de vagas remotas
+- Mostra **só vagas com chance real de contratação** e estima a **Chance (0–100)** de cada uma, com base em evidências de recrutamento:
+  - **Match de stack**: estudos mostram que cobrir ~50–60% dos requisitos já iguala a taxa de entrevista de quem cobre 90%+, e que alinhar o currículo às palavras-chave da vaga multiplica os callbacks. → exige aderência mínima de stack.
+  - **Recência**: vagas antigas (>30 dias) são provavelmente "ghost jobs" (20–35% das vagas) e aplicar cedo rende mais. → descarta vagas velhas, prioriza recentes.
+  - **Senioridade**: aplicar acima do nível tem retorno baixíssimo. → filtra sênior/lead/gestão e "X+ anos".
+  - **Região**: vaga remota restrita a outro país não contrata quem está no Brasil. → mantém só Brasil/LATAM/Worldwide; descarta US-only, Europe-only, etc.
+  - **Regra de ouro do perfil**: remoto OU Bauru. Cada card mostra os motivos do match e o selo de Chance (Alta/Média).
+- **Gera currículo específico para a vaga** usando a Claude: o botão "Gerar currículo" monta um prompt com todos os dados da vaga + o seu perfil e devolve o currículo pronto. Sem chave configurada, o sistema avisa que está sem token e entrega o prompt para você gerar manualmente.
+- **Acompanha candidaturas** (funil de seleção) e **métricas** (taxa de callback), salvos localmente no navegador.
 
-## Componentes
+## Stack
 
-### Backend (Spring Boot 3 + Java 21)
-- Scraping de vagas: Gupy, GeekHunter, Programathor e Remotivo
-- Motor de score com regras de negócio e pesos
-- Agendador diário às 19h via `@Scheduled`
-- API REST para o dashboard
-- Integração com Telegram Bot API
-
-### Serviço ML (FastAPI + scikit-learn)
-- Modelo RandomForest treinado com histórico de candidaturas
-- Feature engineering: keywords, localização, senioridade, salário
-- Walk-Forward Validation para evitar data leakage
-- Endpoint `POST /score` com resposta em < 50ms
-
-### Frontend (Next.js 15)
-- Dashboard com vagas do dia ordenadas por score
-- Histórico de candidaturas com funil de seleção
-- Métricas de acurácia do modelo ML
-- Estatísticas: taxa de callback, vagas por plataforma
+- **Next.js 15** + React 19 + TypeScript + Tailwind
+- **SDK da Anthropic** (`@anthropic-ai/sdk`) para gerar currículos
+- **Vitest** para os testes
+- Sem banco de dados: as candidaturas ficam no `localStorage`; as vagas vêm das fontes em tempo real com cache (ISR de 30 min)
 
 ## Como rodar localmente
 
-### Pré-requisitos
-
-- **Docker** e **Docker Compose**
-- **Telegram Bot Token**: crie um bot via [@BotFather](https://t.me/BotFather) no Telegram
-
-### Passo a passo
-
 ```bash
-# 1. Clone o repositório
-git clone https://github.com/fabriciojunio/JIS.git
-cd JIS
-
-# 2. Configure as variáveis de ambiente
-cp .env.example .env
-# Edite .env com suas credenciais (veja a seção abaixo)
-
-# 3. Suba todos os serviços
-docker compose up -d
+cd frontend
+npm install
+npm run dev
 ```
 
-Após iniciar, acesse:
-- **Dashboard:** [http://localhost:3000](http://localhost:3000)
-- **API Spring Boot:** [http://localhost:8080](http://localhost:8080)
-- **API ML (Swagger):** [http://localhost:8001/docs](http://localhost:8001/docs)
-- **Banco de dados:** `docker exec -it jis-db psql -U postgres -d jis`
+Acesse [http://localhost:3000](http://localhost:3000).
 
-## Variáveis de Ambiente
-
-Edite `.env` com suas credenciais:
+Para gerar currículos com a Claude dentro do sistema, crie `frontend/.env.local`:
 
 ```env
-# Banco de dados PostgreSQL
-SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/jis
-SPRING_DATASOURCE_USERNAME=postgres
-SPRING_DATASOURCE_PASSWORD=senha_segura
-
-# Telegram: crie um bot em https://t.me/BotFather
-TELEGRAM_BOT_TOKEN=seu_bot_token_aqui
-TELEGRAM_CHAT_ID=seu_chat_id_aqui
-
-# Serviço ML (FastAPI)
-ML_SERVICE_URL=http://localhost:8001
-
-# Frontend
-NEXT_PUBLIC_API_URL=http://localhost:8080
+ANTHROPIC_API_KEY=sua_chave_aqui
+# opcional
+JIS_CV_MODEL=claude-opus-4-8
 ```
+
+Sem a chave, tudo funciona — a geração de currículo mostra o aviso "sem token" e disponibiliza o prompt pronto para copiar.
+
+## Testes
+
+```bash
+cd frontend
+npm test
+```
+
+## Personalizar o perfil
+
+Todo o seu perfil (skills com pesos, stack incompatível, níveis aceitos, cidades da região de Bauru, salário e projetos) vive em [frontend/src/lib/profile.ts](frontend/src/lib/profile.ts). Edite esse arquivo para reajustar o que conta como vaga boa — o scoring e as buscas se adaptam.
+
+## Deploy (Vercel)
+
+```bash
+cd frontend
+vercel
+```
+
+No painel da Vercel, em **Settings → Environment Variables**, adicione `ANTHROPIC_API_KEY` para habilitar a geração automática de currículos em produção.
 
 ## Licença
 
