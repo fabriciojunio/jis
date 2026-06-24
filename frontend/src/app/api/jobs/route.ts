@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import { getJobs } from "@/lib/jobs";
 
 export const runtime = "nodejs";
-// Revalida a cada 30 min; as fontes já têm cache próprio de 1h.
-export const revalidate = 1800;
+// Roda em runtime (não no build); as fontes têm cache próprio de 1h e o cron
+// diário atualiza o cache de dados.
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const payload = await getJobs();
