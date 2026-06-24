@@ -29,35 +29,32 @@ export function CvPanel({ job, onGenerated }: { job: Job; onGenerated?: () => vo
   }
 
   return (
-    <div className="mt-3 border-t border-gray-100 pt-3">
+    <div className="mt-3 border-t border-[#1e2638] pt-3">
       {!prompt ? (
-        <button
-          onClick={gerar}
-          className="text-sm font-semibold bg-[#0f3460] text-white px-3 py-1.5 rounded-lg hover:bg-[#1a1a2e] transition-colors"
-        >
+        <button onClick={gerar} className="btn-primary">
           Montar prompt do currículo
         </button>
       ) : (
         <div>
-          <p className="text-xs text-gray-500 mb-1">
+          <p className="text-xs text-slate-400 mb-2">
             Copie o prompt abaixo e cole no{" "}
             <a
               href="https://claude.ai"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#0f3460] underline"
+              className="text-indigo-400 hover:text-indigo-300 underline"
             >
               Claude
             </a>{" "}
             para gerar o currículo sob medida para esta vaga.
           </p>
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-semibold text-gray-500">Prompt pronto</span>
-            <button onClick={() => copiar(prompt)} className="text-xs text-[#0f3460] hover:underline">
-              {copiado ? "Copiado!" : "Copiar prompt"}
+            <span className="text-xs font-semibold text-slate-500">Prompt pronto</span>
+            <button onClick={() => copiar(prompt)} className="text-xs text-indigo-400 hover:text-indigo-300">
+              {copiado ? "Copiado" : "Copiar prompt"}
             </button>
           </div>
-          <pre className="text-xs text-gray-700 whitespace-pre-wrap bg-gray-50 rounded-lg p-3 max-h-96 overflow-y-auto font-sans">
+          <pre className="text-xs text-slate-300 whitespace-pre-wrap bg-[#0d1320] border border-[#1e2638] rounded-lg p-3 max-h-96 overflow-y-auto font-sans">
             {prompt}
           </pre>
         </div>
