@@ -53,7 +53,7 @@ function rotuloNivel(termo: string): string {
 
 function workModeScore(job: Job): number {
   if (job.remote) return 3.0;
-  const local = (job.location ?? "").toLowerCase();
+  const local = String(job.location ?? "").toLowerCase();
   const ehBauru = PROFILE.cidadesAceitas.some((c) => local.includes(c));
   if (job.hybrid) return ehBauru ? 2.0 : -1.0;
   if (ehBauru) return 2.0;
@@ -144,7 +144,7 @@ export function recencyFit(publishedAt: string | null): number {
 
 /** Aderência de região: a vaga pode contratar alguém no Brasil? (0-1) */
 export function regionFit(job: Job): { fit: number; permitida: boolean } {
-  const local = (job.location ?? "").toLowerCase();
+  const local = String(job.location ?? "").toLowerCase();
 
   if (!job.remote) {
     const ehBauru = PROFILE.cidadesAceitas.some((c) => local.includes(c));
@@ -258,7 +258,7 @@ function round(v: number): number {
 /** Base: remota OU em Bauru/região (com sinal de remoto quando local é desconhecido). */
 export function isRemoteOrBauru(job: Job): boolean {
   if (job.remote) return true;
-  const local = (job.location ?? "").toLowerCase();
+  const local = String(job.location ?? "").toLowerCase();
   if (PROFILE.cidadesAceitas.some((c) => local.includes(c))) return true;
   const text = `${job.title} ${job.description ?? ""}`.toLowerCase();
   if (local.trim() === "" && /(remoto|remote|home office|anywhere|worldwide)/.test(text)) return true;

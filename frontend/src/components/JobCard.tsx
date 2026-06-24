@@ -5,6 +5,7 @@ import type { Job } from "@/lib/types";
 import { ScoreBar } from "./ScoreBar";
 import { CvPanel } from "./CvPanel";
 import { addApplication, isApplied } from "@/lib/applications";
+import { isNewAndMark, isCvGenerated, markCvGenerated } from "@/lib/tracking";
 
 interface JobCardProps {
   job: Job;
@@ -26,9 +27,13 @@ export function JobCard({ job, rank }: JobCardProps) {
   const [applied, setApplied] = useState(false);
   const [showDesc, setShowDesc] = useState(false);
   const [showCv, setShowCv] = useState(false);
+  const [isNew, setIsNew] = useState(false);
+  const [cvDone, setCvDone] = useState(false);
 
   useEffect(() => {
     setApplied(isApplied(job.id));
+    setCvDone(isCvGenerated(job.id));
+    setIsNew(isNewAndMark(job.id));
   }, [job.id]);
 
   function handleApply() {
@@ -54,9 +59,19 @@ export function JobCard({ job, rank }: JobCardProps) {
     <div className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow flex flex-col">
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1 min-w-0">
-          {rank && (
-            <span className="inline-block text-xs font-bold text-gray-400 mb-1">#{rank}</span>
-          )}
+          <div className="flex items-center gap-2 mb-1">
+            {rank && <span className="text-xs font-bold text-gray-400">#{rank}</span>}
+            {isNew && !applied && (
+              <span className="text-[10px] font-bold uppercase tracking-wide bg-[#e94560] text-white rounded px-1.5 py-0.5 animate-pulse">
+                Novo
+              </span>
+            )}
+            {cvDone && (
+              <span className="text-[10px] font-semibold bg-indigo-100 text-indigo-700 rounded px-1.5 py-0.5">
+                Currículo gerado
+              </span>
+            )}
+          </div>
           <h3 className="font-semibold text-gray-900 text-base leading-tight">{job.title}</h3>
           <p className="text-sm text-gray-500 mt-0.5">{job.companyName}</p>
           {job.location && (
@@ -149,7 +164,15 @@ export function JobCard({ job, rank }: JobCardProps) {
         </button>
       </div>
 
-      {showCv && <CvPanel job={job} />}
+      {showCv && (
+        <CvPanel
+          job={job}
+          onGenerated={() => {
+            markCvGenerated(job.id);
+            setCvDone(true);
+          }}
+        />
+      )}
     </div>
   );
 }
