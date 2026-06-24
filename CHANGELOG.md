@@ -10,8 +10,8 @@
 
 - Coleta de vagas reais de 8 fontes sem API key: LinkedIn (guest), Remotive, RemoteOK, Jobicy, Himalayas, Arbeitnow, The Muse e WeWorkRemotely.
 - Motor de pontuação em TypeScript baseado no perfil, com a regra remoto OU Bauru.
-- Geração de currículo sob medida para cada vaga usando a Claude, com aviso de "sem token" e prompt pronto quando a chave não está configurada.
-- Acompanhamento de candidaturas e métricas via localStorage.
+- Geração de currículo sob medida para cada vaga: o sistema monta um prompt com os dados da vaga e o perfil para o candidato copiar e colar no Claude.
+- Acompanhamento de candidaturas e métricas via localStorage; selo "Novo" para vagas inéditas; plano do dia e lembrete de follow-up.
 - Testes com Vitest cobrindo scoring e os parsers das fontes.
 
 ### Removido
