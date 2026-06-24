@@ -1,139 +1,93 @@
-import { getLast30Days, getCallbackRate } from "@/lib/api";
-import type { DailyMetrics } from "@/lib/types";
+"use client";
 
-export const revalidate = 600;
+import { useEffect, useState } from "react";
+import type { Application } from "@/lib/types";
+import { STAGE_LABELS } from "@/lib/types";
+import { getApplications, callbackRate } from "@/lib/applications";
 
-export default async function MetricasPage() {
-  const [days, rate] = await Promise.allSettled([
-    getLast30Days(),
-    getCallbackRate(),
-  ]);
+export default function MetricasPage() {
+  const [apps, setApps] = useState<Application[]>([]);
 
-  const metrics: DailyMetrics[] =
-    days.status === "fulfilled" ? days.value : [];
-  const callbackRate =
-    rate.status === "fulfilled" ? rate.value.callbackRate : 0;
+  useEffect(() => {
+    const reload = () => setApps(getApplications());
+    reload();
+    window.addEventListener("jis:applications-changed", reload);
+    return () => window.removeEventListener("jis:applications-changed", reload);
+  }, []);
 
-  const totals = metrics.reduce(
-    (acc, d) => ({
-      collected: acc.collected + d.jobsCollected,
-      notified: acc.notified + d.jobsNotified,
-      applications: acc.applications + d.applicationsSent,
-      interviews: acc.interviews + d.interviewsScheduled,
-    }),
-    { collected: 0, notified: 0, applications: 0, interviews: 0 }
-  );
+  const total = apps.length;
+  const respostas = apps.filter((a) => a.responseAt).length;
+  const entrevistas = apps.filter((a) => a.stage === "technical" || a.stage === "hr").length;
+  const ofertas = apps.filter((a) => a.stage === "offer").length;
+  const taxa = callbackRate(apps);
 
-  const maxCollected = Math.max(...metrics.map((d) => d.jobsCollected), 1);
+  // distribuição por estágio
+  const porEstagio = Object.keys(STAGE_LABELS).map((stage) => ({
+    stage,
+    label: STAGE_LABELS[stage],
+    count: apps.filter((a) => a.stage === stage).length,
+  }));
+  const maxCount = Math.max(...porEstagio.map((e) => e.count), 1);
+
+  const cards = [
+    { label: "Candidaturas", value: total },
+    { label: "Respostas", value: respostas },
+    { label: "Entrevistas", value: entrevistas },
+    { label: "Taxa de callback", value: `${taxa.toFixed(1)}%`, highlight: true },
+  ];
 
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gray-900">Métricas</h1>
 
-      {/* Summary cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <StatCard label="Vagas Coletadas (30d)" value={totals.collected} />
-        <StatCard label="Notificações Enviadas" value={totals.notified} />
-        <StatCard label="Candidaturas" value={totals.applications} />
-        <StatCard
-          label="Taxa de Callback"
-          value={`${callbackRate.toFixed(1)}%`}
-          highlight
-        />
+        {cards.map((c) => (
+          <div
+            key={c.label}
+            className={`rounded-xl border p-4 text-center ${
+              c.highlight ? "bg-[#0f3460] border-[#0f3460] text-white" : "bg-white border-gray-200"
+            }`}
+          >
+            <p className={`text-2xl font-bold ${c.highlight ? "text-white" : "text-[#0f3460]"}`}>
+              {c.value}
+            </p>
+            <p className={`text-xs mt-1 ${c.highlight ? "text-blue-200" : "text-gray-500"}`}>
+              {c.label}
+            </p>
+          </div>
+        ))}
       </div>
 
-      {/* Bar chart */}
       <div className="bg-white rounded-xl border border-gray-200 p-5">
-        <h2 className="font-semibold text-gray-900 mb-4">
-          Vagas coletadas por dia (últimos 30 dias)
-        </h2>
-        {metrics.length === 0 ? (
-          <p className="text-gray-400 text-center py-8">Sem dados ainda.</p>
+        <h2 className="font-semibold text-gray-900 mb-4">Funil de candidaturas</h2>
+        {total === 0 ? (
+          <p className="text-gray-400 text-center py-8">
+            Sem dados ainda. Marque vagas como aplicadas para acompanhar seu funil.
+          </p>
         ) : (
-          <div className="flex items-end gap-1 h-32">
-            {[...metrics].reverse().map((d) => {
-              const pct = (d.jobsCollected / maxCollected) * 100;
-              return (
-                <div
-                  key={d.date}
-                  className="flex-1 flex flex-col items-center gap-1 group relative"
-                >
+          <div className="space-y-2">
+            {porEstagio.map((e) => (
+              <div key={e.stage} className="flex items-center gap-3">
+                <span className="text-sm text-gray-600 w-24 shrink-0">{e.label}</span>
+                <div className="flex-1 h-6 bg-gray-100 rounded overflow-hidden">
                   <div
-                    className="w-full bg-[#0f3460] rounded-t hover:bg-[#e94560] transition-colors"
-                    style={{ height: `${Math.max(pct, 2)}%` }}
-                  />
-                  <span className="text-[9px] text-gray-400 hidden group-hover:block absolute -bottom-5 whitespace-nowrap">
-                    {new Date(d.date).toLocaleDateString("pt-BR", {
-                      day: "2-digit",
-                      month: "2-digit",
-                    })}
-                  </span>
+                    className="h-full bg-[#0f3460] rounded flex items-center justify-end pr-2"
+                    style={{ width: `${Math.max((e.count / maxCount) * 100, e.count ? 8 : 0)}%` }}
+                  >
+                    {e.count > 0 && <span className="text-xs text-white font-medium">{e.count}</span>}
+                  </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         )}
       </div>
 
-      {/* Table */}
-      {metrics.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
-              <tr>
-                {["Data", "Coletadas", "Avaliadas", "Notificadas", "Candidaturas", "Respostas"].map(
-                  (h) => (
-                    <th key={h} className="px-4 py-3 text-left font-medium">
-                      {h}
-                    </th>
-                  )
-                )}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {metrics.map((d) => (
-                <tr key={d.date} className="hover:bg-gray-50">
-                  <td className="px-4 py-2 font-medium">
-                    {new Date(d.date).toLocaleDateString("pt-BR")}
-                  </td>
-                  <td className="px-4 py-2">{d.jobsCollected}</td>
-                  <td className="px-4 py-2">{d.jobsScored}</td>
-                  <td className="px-4 py-2">{d.jobsNotified}</td>
-                  <td className="px-4 py-2">{d.applicationsSent}</td>
-                  <td className="px-4 py-2">{d.responsesReceived}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {ofertas > 0 && (
+        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-center text-emerald-800">
+          🎉 Você tem {ofertas} {ofertas === 1 ? "oferta" : "ofertas"}! Parabéns.
         </div>
       )}
-    </div>
-  );
-}
-
-function StatCard({
-  label,
-  value,
-  highlight = false,
-}: {
-  label: string;
-  value: string | number;
-  highlight?: boolean;
-}) {
-  return (
-    <div
-      className={`rounded-xl border p-4 text-center ${
-        highlight
-          ? "bg-[#0f3460] border-[#0f3460] text-white"
-          : "bg-white border-gray-200"
-      }`}
-    >
-      <p className={`text-2xl font-bold ${highlight ? "text-white" : "text-[#0f3460]"}`}>
-        {value}
-      </p>
-      <p className={`text-xs mt-1 ${highlight ? "text-blue-200" : "text-gray-500"}`}>
-        {label}
-      </p>
     </div>
   );
 }
