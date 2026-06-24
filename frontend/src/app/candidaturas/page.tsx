@@ -9,6 +9,7 @@ import {
   removeApplication,
   callbackRate,
 } from "@/lib/applications";
+import { precisaFollowUp } from "@/lib/goals";
 
 const STAGES: Stage[] = ["applied", "screening", "hr", "technical", "offer", "rejected"];
 
@@ -77,6 +78,11 @@ export default function CandidaturasPage() {
                 <p className="text-xs text-gray-400 mt-0.5">
                   Aplicado em {new Date(app.appliedAt).toLocaleDateString("pt-BR")}
                 </p>
+                {precisaFollowUp(app.appliedAt, app.stage, app.responseAt) && (
+                  <span className="inline-block mt-1 text-[11px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 rounded px-1.5 py-0.5">
+                    ⏰ Hora de dar follow-up
+                  </span>
+                )}
               </div>
               <div className="shrink-0 flex items-center gap-2">
                 <span

@@ -7,6 +7,7 @@ import { fetchHimalayas } from "./himalayas";
 import { fetchArbeitnow } from "./arbeitnow";
 import { fetchWeWorkRemotely } from "./weworkremotely";
 import { fetchMuse } from "./themuse";
+import { fetchGetOnBoard } from "./getonboard";
 
 export interface Source {
   name: string;
@@ -22,6 +23,7 @@ export const SOURCES: Source[] = [
   { name: "Arbeitnow", fetch: fetchArbeitnow },
   { name: "WeWorkRemotely", fetch: fetchWeWorkRemotely },
   { name: "The Muse", fetch: fetchMuse },
+  { name: "Get on Board", fetch: fetchGetOnBoard },
 ];
 
 export interface SourceResult {

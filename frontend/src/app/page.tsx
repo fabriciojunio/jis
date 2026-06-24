@@ -1,8 +1,9 @@
 import { getJobs } from "@/lib/jobs";
 import { JobCard } from "@/components/JobCard";
+import { PlanoDoDia } from "@/components/PlanoDoDia";
 import Link from "next/link";
 
-export const revalidate = 1800;
+export const dynamic = "force-dynamic";
 
 export default async function Dashboard() {
   const { jobs, sources, collectedAt } = await getJobs();
@@ -21,6 +22,8 @@ export default async function Dashboard() {
 
   return (
     <div className="space-y-6">
+      <PlanoDoDia />
+
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>

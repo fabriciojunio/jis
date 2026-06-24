@@ -8,7 +8,7 @@ import type { Job } from "@/lib/types";
  * configurada, mostra o currículo pronto; senão, mostra o prompt para copiar
  * e gerar no Claude/Claude Code.
  */
-export function CvPanel({ job }: { job: Job }) {
+export function CvPanel({ job, onGenerated }: { job: Job; onGenerated?: () => void }) {
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [cv, setCv] = useState<string | null>(null);
@@ -39,6 +39,7 @@ export function CvPanel({ job }: { job: Job }) {
         setPrompt(data.prompt);
         if (data.error) setErro(data.error);
       }
+      onGenerated?.();
     } catch {
       setErro("Não foi possível contactar o servidor.");
     } finally {
