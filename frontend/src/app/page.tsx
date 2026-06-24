@@ -24,32 +24,32 @@ export default async function Dashboard() {
     <div className="space-y-6">
       <PlanoDoDia />
 
-      <div className="flex items-center justify-between flex-wrap gap-3">
+      <div className="flex items-end justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
-            Só vagas com chance real de contratação: stack compatível, nível adequado, recentes e que contratam no Brasil
+          <h1 className="text-2xl font-bold text-slate-100 tracking-tight">Dashboard</h1>
+          <p className="text-sm text-slate-400 mt-1">
+            Foco no Brasil (remoto ou Bauru): só vagas com chance real, stack compatível, nível adequado e recentes. Internacional aparece abaixo.
           </p>
         </div>
-        <span className="text-xs text-gray-400">
+        <span className="text-xs text-slate-500">
           Atualizado {new Date(collectedAt).toLocaleString("pt-BR")}
         </span>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {stats.map((s) => (
-          <div key={s.label} className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-            <p className="text-2xl font-bold text-[#0f3460]">{s.value}</p>
-            <p className="text-xs text-gray-500 mt-1">{s.label}</p>
+          <div key={s.label} className="card p-4">
+            <p className="text-2xl font-bold text-slate-100">{s.value}</p>
+            <p className="text-xs text-slate-500 mt-1">{s.label}</p>
           </div>
         ))}
       </div>
 
       {jobs.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-xl border border-dashed border-gray-200">
-          <p className="text-gray-400 text-lg">Nenhuma vaga encontrada agora.</p>
-          <p className="text-sm text-gray-400 mt-1">
-            As fontes podem estar temporariamente indisponíveis. Tente recarregar em alguns minutos.
+        <div className="card border-dashed text-center py-16">
+          <p className="text-slate-400">Nenhuma vaga encontrada agora.</p>
+          <p className="text-sm text-slate-500 mt-1">
+            As fontes podem estar temporariamente indisponíveis. Recarregue em alguns minutos.
           </p>
         </div>
       ) : (
@@ -60,8 +60,8 @@ export default async function Dashboard() {
             ))}
           </div>
           <div className="text-center">
-            <Link href="/vagas" className="text-sm font-medium text-[#0f3460] hover:underline">
-              Ver todas as {jobs.length} vagas →
+            <Link href="/vagas" className="text-sm font-medium text-indigo-400 hover:text-indigo-300">
+              Ver todas as {jobs.length} vagas
             </Link>
           </div>
         </>

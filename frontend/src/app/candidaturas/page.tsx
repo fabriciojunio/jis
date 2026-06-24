@@ -43,59 +43,52 @@ export default function CandidaturasPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <h1 className="text-2xl font-bold text-gray-900">Candidaturas</h1>
-        <div className="flex gap-4 text-sm text-gray-500">
+      <div className="flex items-end justify-between flex-wrap gap-2">
+        <h1 className="text-2xl font-bold text-slate-100 tracking-tight">Candidaturas</h1>
+        <div className="flex gap-4 text-sm text-slate-400">
           <span>{total} total</span>
           <span>{respostas} respostas</span>
-          <span className="font-semibold text-[#0f3460]">{taxa}% callback</span>
+          <span className="font-semibold text-indigo-300">{taxa}% callback</span>
         </div>
       </div>
 
       {apps.length === 0 ? (
-        <div className="text-center py-16 text-gray-400">
+        <div className="card border-dashed text-center py-16 text-slate-500">
           Nenhuma candidatura ainda. Clique em &quot;Marcar aplicado&quot; em uma vaga.
         </div>
       ) : (
         <div className="space-y-3">
           {apps.map((app) => (
-            <div
-              key={app.id}
-              className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-4"
-            >
+            <div key={app.id} className="card p-4 flex items-center gap-4">
               <div className="flex-1 min-w-0">
                 <a
                   href={app.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-semibold text-gray-900 truncate hover:text-[#0f3460]"
+                  className="font-semibold text-slate-100 truncate hover:text-indigo-300"
                 >
                   {app.jobTitle}
                 </a>
-                <p className="text-sm text-gray-500">
-                  {app.companyName} · {app.source}
+                <p className="text-sm text-slate-500">
+                  {app.companyName ? `${app.companyName} · ` : ""}{app.source}
                 </p>
-                <p className="text-xs text-gray-400 mt-0.5">
+                <p className="text-xs text-slate-600 mt-0.5">
                   Aplicado em {new Date(app.appliedAt).toLocaleDateString("pt-BR")}
                 </p>
                 {precisaFollowUp(app.appliedAt, app.stage, app.responseAt) && (
-                  <span className="inline-block mt-1 text-[11px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 rounded px-1.5 py-0.5">
-                    ⏰ Hora de dar follow-up
+                  <span className="inline-block mt-1.5 text-[11px] font-medium text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded px-1.5 py-0.5">
+                    Hora de dar follow-up
                   </span>
                 )}
               </div>
               <div className="shrink-0 flex items-center gap-2">
-                <span
-                  className={`text-xs px-2 py-1 rounded-full font-medium ${
-                    STAGE_COLORS[app.stage] ?? "bg-gray-100 text-gray-600"
-                  }`}
-                >
+                <span className={`text-xs px-2 py-1 rounded-full font-medium ${STAGE_COLORS[app.stage] ?? "chip"}`}>
                   {STAGE_LABELS[app.stage] ?? app.stage}
                 </span>
                 <select
                   value={app.stage}
                   onChange={(e) => handleStage(app.id, e.target.value as Stage)}
-                  className="text-xs border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-[#0f3460]"
+                  className="text-xs bg-[#0d1320] border border-[#1e2638] text-slate-300 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-500/50"
                 >
                   {STAGES.map((s) => (
                     <option key={s} value={s}>
@@ -105,10 +98,10 @@ export default function CandidaturasPage() {
                 </select>
                 <button
                   onClick={() => handleRemove(app.id)}
-                  className="text-xs text-gray-400 hover:text-red-500"
+                  className="text-xs text-slate-500 hover:text-red-400 px-1"
                   title="Remover"
                 >
-                  ✕
+                  Remover
                 </button>
               </div>
             </div>

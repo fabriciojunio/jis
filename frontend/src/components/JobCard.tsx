@@ -42,48 +42,43 @@ export function JobCard({ job, rank }: JobCardProps) {
   }
 
   const workMode = job.remote ? "Remoto" : job.hybrid ? "Híbrido" : "Presencial";
-  const workColor = job.remote
-    ? "bg-emerald-100 text-emerald-700"
-    : job.hybrid
-      ? "bg-sky-100 text-sky-700"
-      : "bg-gray-100 text-gray-600";
   const quando = tempoRelativo(job.publishedAt);
   const chanceColor =
     job.chanceLabel === "Alta"
-      ? "bg-emerald-600 text-white"
+      ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/10"
       : job.chanceLabel === "Média"
-        ? "bg-amber-500 text-white"
-        : "bg-gray-300 text-gray-700";
+        ? "text-amber-400 border-amber-500/30 bg-amber-500/10"
+        : "text-slate-400 border-slate-600/40 bg-slate-700/20";
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow flex flex-col">
+    <div className="card p-5 flex flex-col hover:border-[#2c374e] transition-colors">
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            {rank && <span className="text-xs font-bold text-gray-400">#{rank}</span>}
+          <div className="flex items-center gap-2 mb-1.5">
+            {rank && <span className="text-xs font-semibold text-slate-600">{rank}</span>}
             {isNew && !applied && (
-              <span className="text-[10px] font-bold uppercase tracking-wide bg-[#e94560] text-white rounded px-1.5 py-0.5 animate-pulse">
+              <span className="text-[10px] font-semibold uppercase tracking-wide bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 rounded px-1.5 py-0.5">
                 Novo
               </span>
             )}
             {cvDone && (
-              <span className="text-[10px] font-semibold bg-indigo-100 text-indigo-700 rounded px-1.5 py-0.5">
-                Currículo gerado
+              <span className="text-[10px] font-medium bg-sky-500/10 text-sky-300 border border-sky-500/20 rounded px-1.5 py-0.5">
+                Currículo pronto
               </span>
             )}
           </div>
-          <h3 className="font-semibold text-gray-900 text-base leading-tight">{job.title}</h3>
-          <p className="text-sm text-gray-500 mt-0.5">{job.companyName}</p>
-          {job.location && (
-            <p className="text-xs text-gray-400 mt-0.5">📍 {job.location}</p>
-          )}
+          <h3 className="font-semibold text-slate-100 text-[15px] leading-snug">{job.title}</h3>
+          <p className="text-xs text-slate-500 mt-1">
+            {job.companyName ? `${job.companyName} · ` : ""}
+            {job.location ?? "Remoto"}
+          </p>
         </div>
         {job.chance != null && (
           <div className="shrink-0 w-28 text-right">
-            <span className={`inline-block text-xs font-bold px-2 py-0.5 rounded-full ${chanceColor}`}>
-              Chance {job.chanceLabel} · {job.chance}%
+            <span className={`inline-block text-xs font-semibold px-2 py-0.5 rounded-full border ${chanceColor}`}>
+              {job.chanceLabel} · {job.chance}%
             </span>
-            <div className="mt-1.5">
+            <div className="mt-2">
               <ScoreBar score={job.chance} />
             </div>
           </div>
@@ -93,43 +88,39 @@ export function JobCard({ job, rank }: JobCardProps) {
       {job.fitReasons && job.fitReasons.length > 0 && (
         <ul className="mb-3 flex flex-wrap gap-1.5">
           {job.fitReasons.map((r) => (
-            <li key={r} className="text-[11px] text-emerald-700 bg-emerald-50 rounded px-1.5 py-0.5">
-              ✓ {r}
+            <li key={r} className="text-[11px] text-emerald-300/90 bg-emerald-500/[0.07] border border-emerald-500/15 rounded px-1.5 py-0.5">
+              {r}
             </li>
           ))}
         </ul>
       )}
 
-      <div className="flex flex-wrap gap-1.5 mb-3">
-        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${workColor}`}>{workMode}</span>
-        {job.level && (
-          <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700">{job.level}</span>
-        )}
+      <div className="flex flex-wrap gap-1.5 mb-4">
+        <span className="chip">{workMode}</span>
+        {job.level && <span className="chip">{job.level}</span>}
         {job.salaryInformed && (job.salaryMin || job.salaryMax) && (
-          <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">
+          <span className="chip text-amber-300/90">
             {job.salaryMin ? job.salaryMin.toLocaleString("pt-BR") : "?"}
-            {job.salaryMax ? ` – ${job.salaryMax.toLocaleString("pt-BR")}` : "+"}
+            {job.salaryMax ? ` a ${job.salaryMax.toLocaleString("pt-BR")}` : "+"}
           </span>
         )}
         {(job.techs ?? []).slice(0, 5).map((t) => (
-          <span key={t} className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">{t}</span>
+          <span key={t} className="chip">{t}</span>
         ))}
-        <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">{job.source}</span>
-        {quando && (
-          <span className="text-xs px-2 py-0.5 rounded-full bg-slate-50 text-slate-400">{quando}</span>
-        )}
+        <span className="chip text-slate-500">{job.source}</span>
+        {quando && <span className="chip text-slate-600">{quando}</span>}
       </div>
 
       {job.description && (
         <div className="mb-3">
           <button
             onClick={() => setShowDesc((v) => !v)}
-            className="text-xs font-medium text-[#0f3460] hover:underline"
+            className="text-xs font-medium text-indigo-400 hover:text-indigo-300"
           >
             {showDesc ? "Ocultar descrição" : "Ver descrição completa"}
           </button>
           {showDesc && (
-            <p className="mt-2 text-sm text-gray-600 whitespace-pre-wrap leading-relaxed max-h-72 overflow-y-auto border-l-2 border-gray-100 pl-3">
+            <p className="mt-2 text-sm text-slate-400 whitespace-pre-wrap leading-relaxed max-h-72 overflow-y-auto border-l-2 border-[#283041] pl-3">
               {job.description}
             </p>
           )}
@@ -141,26 +132,23 @@ export function JobCard({ job, rank }: JobCardProps) {
           href={job.link}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 min-w-[100px] text-center text-sm font-semibold text-white bg-[#0f3460] hover:bg-[#1a1a2e] rounded-lg py-2 transition-colors"
+          className="btn-primary flex-1 min-w-[100px]"
         >
           Ver vaga
         </a>
         <button
           onClick={handleApply}
           disabled={applied}
-          className={`flex-1 min-w-[100px] text-sm font-semibold rounded-lg py-2 transition-colors border ${
+          className={`flex-1 min-w-[100px] text-sm font-medium rounded-lg py-2 px-3 transition-colors border ${
             applied
-              ? "bg-emerald-50 text-emerald-700 border-emerald-200 cursor-default"
-              : "bg-white text-gray-700 border-gray-200 hover:border-[#e94560] hover:text-[#e94560]"
+              ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/30 cursor-default"
+              : "text-slate-300 border-[#283041] hover:border-emerald-500/60 hover:text-emerald-300"
           }`}
         >
-          {applied ? "✓ Aplicado" : "Marcar aplicado"}
+          {applied ? "Aplicado" : "Marcar aplicado"}
         </button>
-        <button
-          onClick={() => setShowCv((v) => !v)}
-          className="flex-1 min-w-[100px] text-sm font-semibold rounded-lg py-2 border border-[#e94560] text-[#e94560] hover:bg-[#e94560] hover:text-white transition-colors"
-        >
-          {showCv ? "Fechar currículo" : "Gerar currículo"}
+        <button onClick={() => setShowCv((v) => !v)} className="btn-ghost flex-1 min-w-[100px]">
+          {showCv ? "Fechar" : "Currículo"}
         </button>
       </div>
 

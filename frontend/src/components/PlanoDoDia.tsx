@@ -5,9 +5,8 @@ import Link from "next/link";
 import { dailyProgress, type DailyProgress } from "@/lib/goals";
 
 /**
- * Painel de "Plano do dia": meta diária de candidaturas + sequência de dias
- * ativos. Implementa metas e proatividade, que a pesquisa associa a mais
- * entrevistas e ofertas.
+ * Plano do dia: meta diária de candidaturas e sequência de dias ativos.
+ * Metas e proatividade aumentam a chance de contratação (pesquisa de busca de emprego).
  */
 export function PlanoDoDia() {
   const [p, setP] = useState<DailyProgress | null>(null);
@@ -25,36 +24,33 @@ export function PlanoDoDia() {
   const pct = Math.min(100, (p.hoje / p.meta) * 100);
 
   return (
-    <div className="bg-gradient-to-r from-[#0f3460] to-[#1a1a2e] text-white rounded-xl p-5">
+    <div className="card p-5">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h2 className="font-semibold text-lg">Plano do dia</h2>
-          <p className="text-sm text-blue-100 mt-0.5">
+          <h2 className="font-semibold text-slate-100">Plano do dia</h2>
+          <p className="text-sm text-slate-400 mt-0.5">
             {bateu
-              ? `Meta batida! ${p.hoje} candidatura(s) hoje. Continue enquanto há vagas novas.`
-              : `Aplique em ${p.faltam} vaga(s) hoje. Marque "aplicado" ao enviar cada uma.`}
+              ? `Meta concluída: ${p.hoje} candidatura(s) hoje. Continue enquanto há vagas novas.`
+              : `Aplique em ${p.faltam} vaga(s) hoje e marque "aplicado" ao enviar cada uma.`}
           </p>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-bold">🔥 {p.streak}</p>
-          <p className="text-xs text-blue-200">dias seguidos</p>
+          <p className="text-xl font-bold text-slate-100">{p.streak}</p>
+          <p className="text-xs text-slate-500">dias seguidos</p>
         </div>
       </div>
 
-      <div className="mt-3 flex items-center gap-3">
-        <div className="flex-1 h-2 bg-white/20 rounded-full overflow-hidden">
+      <div className="mt-4 flex items-center gap-3">
+        <div className="flex-1 h-2 bg-[#1e2638] rounded-full overflow-hidden">
           <div
-            className={`h-full rounded-full transition-all ${bateu ? "bg-emerald-400" : "bg-[#e94560]"}`}
+            className={`h-full rounded-full transition-all ${bateu ? "bg-emerald-500" : "bg-indigo-500"}`}
             style={{ width: `${pct}%` }}
           />
         </div>
-        <span className="text-sm font-semibold">
+        <span className="text-sm font-semibold text-slate-300">
           {p.hoje}/{p.meta}
         </span>
-        <Link
-          href="/vagas"
-          className="text-xs font-semibold bg-white/15 hover:bg-white/25 rounded-lg px-3 py-1.5 transition-colors"
-        >
+        <Link href="/vagas" className="btn-ghost py-1.5 px-3 text-xs">
           Ver vagas
         </Link>
       </div>
