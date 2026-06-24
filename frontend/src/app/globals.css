@@ -1,20 +1,68 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --brand-dark:    #1e1b4b;
-  --brand-mid:     #312e81;
-  --brand-blue:    #4f46e5;
-  --brand-sky:     #0ea5e9;
-  --brand-accent:  #8b5cf6;
-  --brand-red:     #e94560;
-  --brand-success: #10b981;
+  --bg:        #0a0e17;
+  --surface:   #111726;
+  --surface-2: #0d1320;
+  --border:    #1e2638;
+  --border-2:  #283041;
+  --text:      #e2e8f0;
+  --muted:     #94a3b8;
+  --faint:     #64748b;
+  --primary:   #6366f1;
+  --primary-2: #4f46e5;
 }
 
 body {
-  @apply bg-slate-50 text-slate-900 antialiased;
+  background-color: var(--bg);
+  color: var(--text);
   font-family: 'DM Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
+
+@layer components {
+  .card {
+    @apply rounded-xl border;
+    background-color: var(--surface);
+    border-color: var(--border);
+  }
+
+  .input {
+    @apply w-full rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-500
+           focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/60;
+    background-color: var(--surface-2);
+    border: 1px solid var(--border);
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold
+           text-white bg-indigo-600 hover:bg-indigo-500 transition-colors
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium
+           text-slate-300 border transition-colors hover:text-white hover:border-indigo-500/70;
+    border-color: var(--border-2);
+  }
+
+  .label {
+    @apply block text-xs font-medium text-slate-400 mb-1;
+  }
+
+  .chip {
+    @apply inline-flex items-center rounded-md px-2 py-0.5 text-xs;
+    background-color: var(--surface-2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+}
+
+/* Barra de rolagem discreta no tema escuro */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: #1e2638; border-radius: 6px; }
+::-webkit-scrollbar-track { background: transparent; }

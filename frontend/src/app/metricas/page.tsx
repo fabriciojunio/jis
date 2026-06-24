@@ -38,40 +38,40 @@ export default function MetricasPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Métricas</h1>
+      <h1 className="text-2xl font-bold text-slate-100 tracking-tight">Métricas</h1>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {cards.map((c) => (
           <div
             key={c.label}
-            className={`rounded-xl border p-4 text-center ${
-              c.highlight ? "bg-[#0f3460] border-[#0f3460] text-white" : "bg-white border-gray-200"
+            className={`rounded-xl border p-4 ${
+              c.highlight
+                ? "bg-indigo-600/15 border-indigo-500/30"
+                : "card"
             }`}
           >
-            <p className={`text-2xl font-bold ${c.highlight ? "text-white" : "text-[#0f3460]"}`}>
+            <p className={`text-2xl font-bold ${c.highlight ? "text-indigo-200" : "text-slate-100"}`}>
               {c.value}
             </p>
-            <p className={`text-xs mt-1 ${c.highlight ? "text-blue-200" : "text-gray-500"}`}>
-              {c.label}
-            </p>
+            <p className="text-xs mt-1 text-slate-500">{c.label}</p>
           </div>
         ))}
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-5">
-        <h2 className="font-semibold text-gray-900 mb-4">Funil de candidaturas</h2>
+      <div className="card p-5">
+        <h2 className="font-semibold text-slate-100 mb-4">Funil de candidaturas</h2>
         {total === 0 ? (
-          <p className="text-gray-400 text-center py-8">
+          <p className="text-slate-500 text-center py-8">
             Sem dados ainda. Marque vagas como aplicadas para acompanhar seu funil.
           </p>
         ) : (
           <div className="space-y-2">
             {porEstagio.map((e) => (
               <div key={e.stage} className="flex items-center gap-3">
-                <span className="text-sm text-gray-600 w-24 shrink-0">{e.label}</span>
-                <div className="flex-1 h-6 bg-gray-100 rounded overflow-hidden">
+                <span className="text-sm text-slate-400 w-24 shrink-0">{e.label}</span>
+                <div className="flex-1 h-6 bg-[#0d1320] rounded overflow-hidden">
                   <div
-                    className="h-full bg-[#0f3460] rounded flex items-center justify-end pr-2"
+                    className="h-full bg-indigo-600 rounded flex items-center justify-end pr-2"
                     style={{ width: `${Math.max((e.count / maxCount) * 100, e.count ? 8 : 0)}%` }}
                   >
                     {e.count > 0 && <span className="text-xs text-white font-medium">{e.count}</span>}
@@ -84,8 +84,8 @@ export default function MetricasPage() {
       </div>
 
       {ofertas > 0 && (
-        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-center text-emerald-800">
-          🎉 Você tem {ofertas} {ofertas === 1 ? "oferta" : "ofertas"}! Parabéns.
+        <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 text-center text-emerald-300">
+          Você tem {ofertas} {ofertas === 1 ? "oferta" : "ofertas"}. Parabéns.
         </div>
       )}
     </div>

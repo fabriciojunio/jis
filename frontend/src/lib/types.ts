@@ -57,12 +57,12 @@ export const STAGE_LABELS: Record<string, string> = {
 };
 
 export const STAGE_COLORS: Record<string, string> = {
-  applied: "bg-blue-100 text-blue-800",
-  screening: "bg-yellow-100 text-yellow-800",
-  hr: "bg-purple-100 text-purple-800",
-  technical: "bg-orange-100 text-orange-800",
-  offer: "bg-green-100 text-green-800",
-  rejected: "bg-red-100 text-red-800",
+  applied: "bg-blue-500/15 text-blue-300 border border-blue-500/20",
+  screening: "bg-yellow-500/15 text-yellow-300 border border-yellow-500/20",
+  hr: "bg-purple-500/15 text-purple-300 border border-purple-500/20",
+  technical: "bg-orange-500/15 text-orange-300 border border-orange-500/20",
+  offer: "bg-emerald-500/15 text-emerald-300 border border-emerald-500/20",
+  rejected: "bg-red-500/15 text-red-300 border border-red-500/20",
 };
 
 /** Estágios que contam como "tive resposta" para a taxa de callback. */
