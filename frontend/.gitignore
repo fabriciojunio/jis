@@ -1,1 +1,18 @@
+# dependências e build
+/node_modules
+/.next
+/out
+/build
+
+# artefatos de ferramenta
+*.tsbuildinfo
+next-env.d.ts
+
+# ambiente e deploy
+.env
+.env.local
+.env*.local
 .vercel
+
+# logs
+*.log

@@ -42,12 +42,21 @@ function normLang(l: string): string {
   return m[l.toLowerCase()] ?? l;
 }
 
+/** Usuário do GitHub: 1-39 caracteres alfanuméricos, hífen não nas pontas. */
+const GH_USER = /^[a-zA-Z\d](?:[a-zA-Z\d]|-(?=[a-zA-Z\d])){0,38}$/;
+
 export async function importFromGithub(username: string, token?: string): Promise<GithubImport> {
   const user = username.trim().replace(/^@/, "").replace(/.*github\.com\//, "").replace(/\/$/, "");
   if (!user) throw new Error("Informe o usuário do GitHub.");
+  if (!GH_USER.test(user)) throw new Error("Usuário do GitHub inválido.");
 
   const headers: Record<string, string> = { Accept: "application/vnd.github+json" };
-  if (token?.trim()) headers.Authorization = `Bearer ${token.trim()}`;
+  // O token só pode conter caracteres seguros de header (evita header injection).
+  const t = token?.trim();
+  if (t) {
+    if (!/^[\w.\-~+/=]+$/.test(t)) throw new Error("Token do GitHub inválido.");
+    headers.Authorization = `Bearer ${t}`;
+  }
 
   const res = await fetch(
     `https://api.github.com/users/${encodeURIComponent(user)}/repos?per_page=100&sort=updated`,
