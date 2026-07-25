@@ -6,22 +6,67 @@ const UA =
 /** Revalidação padrão das fontes: 1h. As vagas não mudam de minuto em minuto. */
 const REVALIDATE = 3600;
 
+/** Tamanho máximo de resposta aceito de uma fonte (8 MB) para evitar exaustão de memória. */
+const MAX_BYTES = 8 * 1024 * 1024;
+
+/**
+ * Endereços internos que uma URL de fonte jamais deve alcançar. Proteção
+ * anti-SSRF: mesmo que uma constante de fonte seja alterada por engano para
+ * apontar a um host interno, o fetch é recusado antes de sair.
+ */
+const HOST_BLOQUEADO =
+  /^(localhost|0\.0\.0\.0|127\.|10\.|192\.168\.|169\.254\.|::1|\[?::1\]?|metadata\.google\.internal)/i;
+
+function ehHostPrivado(hostname: string): boolean {
+  const h = hostname.replace(/^\[|\]$/g, "").toLowerCase();
+  if (HOST_BLOQUEADO.test(h)) return true;
+  // Faixa privada 172.16.0.0 – 172.31.255.255
+  const m = /^172\.(\d{1,3})\./.exec(h);
+  if (m) {
+    const oct = Number(m[1]);
+    if (oct >= 16 && oct <= 31) return true;
+  }
+  return false;
+}
+
+/**
+ * Só permite buscar URLs https públicas. Bloqueia http em claro, esquemas
+ * exóticos (file:, gopher:, ftp:) e hosts internos/loopback. É a barreira
+ * anti-SSRF do agregador, aplicada a toda ida à rede.
+ */
+export function urlPermitida(url: string): boolean {
+  let u: URL;
+  try {
+    u = new URL(url);
+  } catch {
+    return false;
+  }
+  if (u.protocol !== "https:") return false;
+  if (!u.hostname || ehHostPrivado(u.hostname)) return false;
+  return true;
+}
+
 /** GET com timeout, User-Agent de navegador e cache do Next. Nunca lança. */
 export async function safeFetch(
   url: string,
   init: RequestInit = {},
   timeoutMs = 15000
 ): Promise<Response | null> {
+  if (!urlPermitida(url)) return null;
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
     const res = await fetch(url, {
       ...init,
       signal: ctrl.signal,
+      redirect: "error", // um redirect da fonte não pode nos levar a um host arbitrário
       headers: { "User-Agent": UA, Accept: "*/*", ...(init.headers ?? {}) },
       next: { revalidate: REVALIDATE },
     });
-    return res.ok ? res : null;
+    if (!res.ok) return null;
+    const len = Number(res.headers.get("content-length") ?? "0");
+    if (len > MAX_BYTES) return null;
+    return res;
   } catch {
     return null;
   } finally {

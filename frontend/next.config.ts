@@ -1,16 +1,30 @@
 import type { NextConfig } from "next";
 
+const isProd = process.env.NODE_ENV === "production";
+
+// Em produção o Next não precisa de eval; só o Fast Refresh do dev usa. Manter
+// a CSP mais fechada possível sem quebrar a hidratação (que exige unsafe-inline
+// enquanto não há suporte a nonce por rota neste app).
+const scriptSrc = isProd
+  ? "script-src 'self' 'unsafe-inline'"
+  : "script-src 'self' 'unsafe-inline' 'unsafe-eval'";
+
 const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
+  // Evita o aviso de "workspace root" por haver mais de um lockfile na árvore
+  // e garante que o rastreamento de arquivos use a raiz deste app.
+  outputFileTracingRoot: __dirname,
 
   images: {
     formats: ['image/avif', 'image/webp'],
   },
 
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+    // Remove console.* do bundle em produção, preservando error/warn para
+    // observabilidade no servidor (logs da Vercel).
+    removeConsole: isProd ? { exclude: ["error", "warn"] } : false,
   },
 
   async headers() {
@@ -31,12 +45,16 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+              scriptSrc,
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https:",
               "font-src 'self' data:",
               "connect-src 'self' https:",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
               "frame-ancestors 'none'",
+              "upgrade-insecure-requests",
             ].join("; "),
           },
         ],
