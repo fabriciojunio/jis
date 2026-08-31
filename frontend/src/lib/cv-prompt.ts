@@ -36,7 +36,7 @@ export function buildCvPrompt(job: Job, profile?: UserProfile): string {
       ? p.cursos.map((x) => `- ${x.nome}${x.instituicao ? ` (${x.instituicao})` : ""}`).join("\n")
       : "(nenhum curso cadastrado)";
 
-  return `Você é um especialista em recrutamento técnico. Crie um currículo em português, em Markdown, sob medida para a vaga abaixo, destacando os pontos do meu perfil que mais conversam com o que a vaga pede. Seja honesto: use apenas o que está no meu perfil, sem inventar experiências.
+  return `Prepare a minha candidatura completa para a vaga abaixo. Você já me conhece: se tiver memória deste projeto, leia as anotações sobre currículo, histórias de entrevista e posicionamento antes de começar.
 
 ## VAGA
 - Título: ${job.title}
@@ -71,10 +71,35 @@ ${formacao}
 ### Cursos e certificações
 ${cursos}
 
-## O QUE EU PRECISO
-1. Um resumo profissional de 3 a 4 linhas focado nesta vaga.
-2. Seção de habilidades técnicas, priorizando o que a vaga pede e que eu domino.
-3. Projetos e experiências reordenados para destacar os mais relevantes para esta vaga, com 1 a 2 bullets de impacto cada.
-4. Uma carta de apresentação curta (3 parágrafos).
-Responda apenas com o currículo e a carta, em Markdown.`;
+## AS MINHAS HISTÓRIAS COM NÚMERO
+Use estas, e não invente outras. Escolha as duas ou três que a vaga pede.
+
+- **O simulador dos 331 processos.** Um fluxo de aprovação pulava a etapa do gestor por causa de uma comparação entre dois campos vazios, que dá verdadeiro. Antes de tocar no código, escrevi um simulador da regra como estava gravada e rodei contra 331 processos reais. Acertou 330. Só então mudei uma linha, sabendo quantos dos 77 processos afetados mudariam. Serve para: método, senso de dono, trabalhar em produção.
+- **"Teste verde não é prova."** Vi correção passar em homologação pelo motivo errado, porque naquele ambiente o defeito nem acontecia. Serve para: maturidade técnica.
+- **O contador desfeito pelo rollback.** Na Vitrine Bauru, o contador de senha errada e a revogação de sessão eram desfeitos pelo rollback da mesma exceção que os disparava: o bloqueio por tentativa existia no código e não na prática. Resolvido com REQUIRES_NEW, e quem achou foi um teste de integração. Serve para: entrevista técnica sobre transação.
+- **A integração do IBGE, 80%.** Preenchimento automático de cidade e estado em abertura de conta digital bancária, com 80% menos tempo de cadastro. Serve para: resultado de negócio e vaga do setor financeiro.
+- **Meta batida três meses seguidos** em cobrança, meio período, enquanto estudava. Serve para: cultura de resultado. Não use em contexto puramente técnico.
+
+**Um ângulo que costuma ficar escondido:** eu sou do setor financeiro desde o primeiro dia. Comecei em abertura de conta digital bancária e hoje atendo seguros, financeiro e cooperativas de crédito. Se a vaga for de banco, corretora, seguradora ou fintech, **isso abre o texto**, e não a lista de tecnologias.
+
+## O QUE EU PRECISO DE VOLTA
+
+**1. Vale a pena?** Diga com franqueza, antes de tudo. Compare o que a vaga exige com o que eu tenho, e aponte o que eu não tenho. Se não valer, diga que não vale e por quê.
+
+**2. Currículo sob medida**, gerado em PDF e salvo em \`C:/Users/junio/Documents/Curriculos/\`. Regras que o leitor automático impõe, e que já me custaram erro: coluna única, sem tabela de layout, data curta no formato "ago 2026 - atual" (por extenso não é extraída), nome da empresa sozinho na linha com o cargo abaixo, contato no corpo e nunca em cabeçalho de página, nada de texto dentro de imagem. Confira no fim que cada palavra-chave da vaga aparece no texto extraível. **Palavra que eu não tenho não entra**: trate a lacuna no campo de texto aberto, admitindo antes de perguntarem.
+
+**3. As respostas do formulário**, campo a campo, prontas para colar. **Meça os caracteres** de cada uma e me diga o número: campo de vaga costuma cortar em 250, 750 ou 2000, e texto cortado no meio queima a candidatura.
+
+**4. A mensagem de contato**, em três versões: para o campo do formulário, para e-mail e para o LinkedIn, esta última medida em 300 caracteres se for nota de convite.
+
+**5. Onde essa empresa recebe candidatura.** Site, página de carreiras e e-mail, **conferidos com navegador**, e não chutados. Metade dos endereços que aparecem em busca está fora do ar.
+
+**6. Pesquise a empresa**: o que ela faz, o que diz valorizar, e onde exatamente eu encaixo. Se ela usa palavras próprias no site, use as palavras dela.
+
+## AS REGRAS
+- **Não invente nada.** Só o que está no meu perfil e nas histórias acima.
+- **Sem travessão** e com acentuação correta em tudo.
+- Fato com número no lugar de adjetivo. "330 acertos em 331" faz o trabalho que "proativo" não faz.
+- Se a vaga for full stack, o currículo é full stack; se for back-end, é back-end. **Mas nunca mude o meu LinkedIn**: o perfil é back-end Java, e isso é posicionamento permanente.
+- Me avise para perguntar a faixa salarial cedo se a vaga for de júnior, porque eu já entrego em produção e falo com cliente.`;
 }
