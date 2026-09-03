@@ -2,6 +2,8 @@
 
 Agregador de vagas que coleta oportunidades reais de várias plataformas, pontua cada uma pela compatibilidade com o seu perfil e foca no que interessa: **vagas em Bauru ou remotas** dentro da sua stack. Para cada vaga, gera um **currículo sob medida com a Claude**, direto na tela.
 
+**No ar:** [jis-vagas.vercel.app](https://jis-vagas.vercel.app)
+
 ## O que faz
 
 - Coleta vagas reais de **8 fontes** (sem necessidade de API key):
