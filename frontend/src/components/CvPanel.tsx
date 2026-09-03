@@ -32,7 +32,7 @@ export function CvPanel({ job, onGenerated }: { job: Job; onGenerated?: () => vo
     <div className="mt-3 border-t border-[#2b251c] pt-3">
       {!prompt ? (
         <button onClick={gerar} className="btn-primary">
-          Montar prompt do currículo
+          Gerar prompt da candidatura
         </button>
       ) : (
         <div>
@@ -46,7 +46,7 @@ export function CvPanel({ job, onGenerated }: { job: Job; onGenerated?: () => vo
             >
               Claude
             </a>{" "}
-            para gerar o currículo sob medida para esta vaga.
+            para receber a análise da vaga, o currículo sob medida, as respostas do formulário medidas em caracteres e onde a empresa recebe candidatura.
           </p>
           <div className="flex items-center justify-between mb-1">
             <span className="text-xs font-semibold text-stone-500">Prompt pronto</span>

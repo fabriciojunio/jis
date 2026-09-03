@@ -6,6 +6,7 @@ import { ScoreBar } from "./ScoreBar";
 import { CvPanel } from "./CvPanel";
 import { addApplication, isApplied } from "@/lib/applications";
 import { isNewAndMark, isCvGenerated, markCvGenerated } from "@/lib/tracking";
+import { buscarEmpresa, buscarNoLinkedin, siteDaEmpresa } from "@/lib/empresa";
 
 interface JobCardProps {
   job: Job;
@@ -50,6 +51,9 @@ export function JobCard({ job, rank }: JobCardProps) {
         ? "text-sky-400 border-sky-500/30 bg-sky-500/10"
         : "text-stone-400 border-stone-600/40 bg-stone-700/20";
 
+  const site = siteDaEmpresa(job.link);
+  const empresa = job.companyName?.trim();
+
   return (
     <div className="card p-5 flex flex-col hover:border-[#3b3326] transition-colors">
       <div className="flex items-start justify-between gap-3 mb-3">
@@ -72,6 +76,36 @@ export function JobCard({ job, rank }: JobCardProps) {
             {job.companyName ? `${job.companyName} · ` : ""}
             {job.location ?? "Remoto"}
           </p>
+          {empresa && (
+            <p className="text-xs text-stone-500 mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+              {site && (
+                <a
+                  href={site}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-stone-300"
+                >
+                  Site da empresa
+                </a>
+              )}
+              <a
+                href={buscarEmpresa(empresa)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-stone-300"
+              >
+                {site ? "Página de carreiras" : "Achar o site e as carreiras"}
+              </a>
+              <a
+                href={buscarNoLinkedin(empresa)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-stone-300"
+              >
+                LinkedIn
+              </a>
+            </p>
+          )}
         </div>
         {job.chance != null && (
           <div className="shrink-0 w-28 text-right">
